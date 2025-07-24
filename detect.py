@@ -94,7 +94,7 @@
 #     return list(set(detections))  # Return unique object names
 
 
-
+#Detect.py
 from ultralytics import YOLO
 import cv2
 
@@ -112,3 +112,5 @@ def detect_objects(image_path):
             labels.append(label)
 
     return list(set(labels))  # Return unique object labels
+
+

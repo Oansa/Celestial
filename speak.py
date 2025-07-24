@@ -8,3 +8,5 @@ def speak_response(text):
     engine.setProperty('volume', 1.0)
     engine.say(text)
     engine.runAndWait()
+
+

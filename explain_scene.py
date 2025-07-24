@@ -24,3 +24,7 @@ def explain_scene(user_input, object_detected):
     except Exception as e:
         print(f"[❌] Error calling OpenAI: {e}")
         return "I'm experiencing difficulty processing your request."
+
+
+
+

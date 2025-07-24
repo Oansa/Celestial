@@ -1,0 +1,37 @@
+{
+  "canisters": {
+    "Celestial_backend": {
+      "build": "python -m kybra Celestial_backend src/Celestial_backend/src/main.py src/Celestial_backend/Celestial_backend.did",
+      "candid": "src/Celestial_backend/Celestial_backend.did",
+      "gzip": true,
+      "post_install": ".kybra/Celestial_backend/post_install.sh",
+      "tech_stack": {
+        "cdk": {
+          "kybra": {}
+        },
+        "language": {
+          "python": {}
+        }
+      },
+      "type": "custom",
+      "wasm": ".kybra/Celestial_backend/Celestial_backend.wasm"
+    },
+    "Celestial_frontend": {
+      "dependencies": [
+        "Celestial_backend"
+      ],
+      "source": [
+        "src/Celestial_frontend/assets"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
