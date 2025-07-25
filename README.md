@@ -67,7 +67,7 @@ With Celestial, humanity takes a leap closer to **thriving beyond Earth**.
 ### 📁 Clone the Repository
 
 
-Terminal run: git clone https://github.com/yourusername/celestial-ai.git
+Terminal run: git clone [https://github.com/yourusername/celestial-ai.git](https://github.com/Oansa/Celestial)
 Terminal run: cd celestial-ai
 
 
