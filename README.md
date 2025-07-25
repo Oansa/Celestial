@@ -49,9 +49,9 @@ We envision Celestial as:
   * Building extraterrestrial infrastructure
   * Enhancing habitability on foreign planets
   * Supporting space mining operations
-  * Managing crewed missions safely
+  * Managing crewed missions safely 
   * Harnessing new methods of generating Energy on Mars
-* A guide to enhancing human chcaracteristics to improve rate of survival on Mars and the Moon
+* A guide to enhancing organism's characteristics to improve rate of survival on Mars and the Moon, i.e: Engage in biohacking activities    that aim to improve the sustainability of human, plant and animal species on Mars.
 
 With Celestial, humanity takes a leap closer to **thriving beyond Earth**.
 
