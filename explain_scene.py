@@ -1,4 +1,5 @@
 # explain_scene.py
+# explain_scene.py
 import openai
 
 openai.api_key = "YOUR_OPENAI_API_KEY"  # Replace this with your actual key
@@ -10,6 +11,7 @@ def explain_scene(user_input, object_detected):
     The system detected: "{object_detected}"
     
     Based on this, respond with insightful advice or an explanation:
+    Don't include emojis or any special characters in the output.
     """
     
     try:
@@ -24,6 +26,8 @@ def explain_scene(user_input, object_detected):
     except Exception as e:
         print(f"[❌] Error calling OpenAI: {e}")
         return "I'm experiencing difficulty processing your request."
+
+
 
 
 

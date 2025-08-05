@@ -1,6 +1,7 @@
 {
   "llm_model": "llama2",
   "system_role": "You are a helpful AI assistant for Mars missions.",
-  "max_tokens": 256,
+  "max_tokens": 150,
   "temperature": 0.7
 }
+

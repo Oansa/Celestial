@@ -94,7 +94,7 @@
 #     return list(set(detections))  # Return unique object names
 
 
-#Detect.py
+########Detect.py
 from ultralytics import YOLO
 import cv2
 
@@ -114,3 +114,33 @@ def detect_objects(image_path):
     return list(set(labels))  # Return unique object labels
 
 
+# from ultralytics import YOLO
+# import cv2
+
+# # Load your trained model
+# model = YOLO("yolov8n.pt")  # Replace with your model
+
+# def detect_objects():
+#     # Open webcam (0 for default camera)
+#     cap = cv2.VideoCapture(0)
+
+#     while cap.isOpened():
+#         ret, frame = cap.read()
+#         if not ret:
+#             break
+
+#         # Run YOLOv8 inference on the frame
+#         results = model(frame)
+
+#         # Visualize the results
+#         annotated_frame = results[0].plot()
+
+#         # Display
+#         cv2.imshow("Celestial Live Detection", annotated_frame)
+
+#         # Press Q to quit
+#         if cv2.waitKey(1) & 0xFF == ord("q"):
+#             break
+
+#     cap.release()
+#     cv2.destroyAllWindows()
