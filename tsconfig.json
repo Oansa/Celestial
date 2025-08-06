@@ -1,11 +1,30 @@
 {
     "compilerOptions": {
+        "baseUrl": "frontend/src",
+        "paths": {
+            "@/*": ["./*"]
+        },
         "strict": true,
         "target": "ES2020",
         "experimentalDecorators": true,
         "strictPropertyInitialization": false,
         "moduleResolution": "node",
         "allowJs": true,
-        "outDir": "HACK_BECAUSE_OF_ALLOW_JS"
-    }
+        "outDir": "dist",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "jsx": "react-jsx"
+    },
+    "include": [
+        "frontend/src/**/*",
+        "frontend/**/*.ts",
+        "frontend/**/*.tsx",
+        "frontend/**/*.js",
+        "frontend/**/*.jsx"
+    ],
+    "exclude": [
+        "node_modules",
+        "frontend/node_modules",
+        "dist"
+    ]
 }
