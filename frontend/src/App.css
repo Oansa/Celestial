@@ -1,140 +1,170 @@
-/* src/App.css */
+/* App.css */
 
-body {
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap"); 
+
+* {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #0d0d0d;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  font-family: 'Orbitron', sans-serif;
+  background-color: #000 !important;
   color: white;
+  overflow-x: hidden;
 }
 
 .app-container {
-  padding: 20px;
-}
-
-/* === TOP LOGO === */
-.top-logo img {
-  height: 50px;
-}
-
-/* === HERO SECTION === */
-.hero-section {
   display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 2rem;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo-section img {
+  width: 48px;
+  height: 48px;
+}
+
+.logo-section h1 {
+  margin-left: 1rem;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-top: 4rem;
+}
+
+.welcome-message {
+  font-size: 3rem;
+  max-width: 700px;
+  text-align: left;
+  margin-bottom: 4rem;
+  margin-left: 2rem;
+}
+
+.godspeed-text {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 10rem;
+  text-align: center;
+  transform: translateY(500%);
+
+}
+
+/* ===== NEW LAYOUT: AVATAR & TEXT LEFT, BUTTON RIGHT ===== */
+.energy-doc-section {
+  /* Positioning - Horizontal layout across the screen */
+  
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(50%);
+  
+  /* Layout - Horizontal flex layout */
+  display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-top: 60px;
+  padding: 0 3rem;
+  z-index: 1000;
 }
 
-.hero-text {
-  width: 50%;
-  font-size: 1.5rem;
-}
-
-.hero-image img {
-  width: 400px;
-  height: auto;
-  border-radius: 12px;
-}
-
-/* === BOTTOM SECTION === */
-.bottom-section {
-  margin-top: 80px;
-  border-top: 1px solid #333;
-  padding-top: 40px;
-}
-
-.bottom-section h2 {
-  margin-bottom: 30px;
-  font-size: 1.8rem;
-  text-align: center; /* centers text horizontally */
-}
-
-
-
-.bottom-content {
+/* Avatar and text container - positioned on the left */
+.energy-doc-left {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 40px;
+  gap: 0.5rem;
 }
 
-.nav-icon {
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-.nav-icon:hover {
-  transform: scale(1.2);
+.energy-doc-avatar {
+  width: 500px;
+  height: 520px;
+  object-fit: contain;
 }
 
-.doc-preview img {
-  width: 120px;
-  height: auto;
-  border-radius: 10px;
-}
-.doc-preview p {
-  margin-top: 10px;
-  font-size: 1.2rem;
+.energy-doc-label {
+  font-size: 1rem;
+  color: #aaa;
+  text-align: center;
 }
 
-.energy-doc-section {
-  display: flex;
-  align-items: center;
-  margin: 40px 0;
-  gap: 30px;
-  justify-content: space-between; /* Pushes children to far left and right */
-  padding: 20px;
-
-
-}
-
+/* ===== ENERGY DOC BUTTON STYLING SECTION - EDIT HERE FOR FUTURE CHANGES ===== */
 .energy-doc-button {
-  font-family: 'Orbitron', sans-serif;
-  padding: 200px 100px;
-  font-size: 16px;
-  border: none;
-  border-radius: 12px;
-  background-color: #1e1e1e;
+  /* Rectangle sizing - adjust width and height as needed */
+  width: 200px;
+  height: 300px;
+  padding: 1rem 2rem;
+  
+  /* Typography */
+  font-size: 1.3rem;
+  font-weight: bold;
+  
+  /* Styling - Gradient background */
+  background: linear-gradient(to right, #ffffff, #000000);
   color: white;
+  /* border: 2px solid #60a5fa; */
+  border-radius: 8px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  
+  /* Hover effects */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .energy-doc-button:hover {
-  background-color: #9e9a9a;
-  color:#0d0d0d;
+  background: linear-gradient(to right, #000000, #ffffff);
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  color:#000;
 }
 
-.energy-doc-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start; 
-  margin-left: 70px; /* Pushes it more to the right */
-  position: absolute; /* Allows it to overlap the button */
-  right: 500px;
-  top: 130%;
-  transform: translateY(-50%);
-  text-align: right;
-
+/* ===== RESPONSIVE POSITIONING - EDIT HERE FOR MOBILE/TABLET CHANGES ===== */
+@media (max-width: 768px) {
+  .energy-doc-section {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 0 1rem;
+  }
+  
+  .energy-doc-button {
+    width: 180px;
+    height: 50px;
+    font-size: 1.1rem;
+  }
+  
+}
+.back-button {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(to right, #2563eb, #9333ea);
+  border: 1px solid #60a5fa;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1000;
 }
 
-
-.energy-doc-avatar {
-  width: 200px;
-  height: 200px;
-  object-fit: contain;
-  margin-bottom: 5px;
-}
-
-.energy-doc-text {
-  margin: 0;
-  font-size: 1.1rem;
-  color: #333;
-}
-
-.energy-doc-container {
-  position: relative;
-  height: 100vh; /* Full screen height */
-  display: flex;
-  justify-content: flex-start; /* Button stays on the left */
-  align-items: center;
-  padding: 0 50px;
+.back-button:hover {
+  background: linear-gradient(to right, #1d4ed8, #7c3aed);
+  transform: scale(1.05);
 }
