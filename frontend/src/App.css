@@ -271,13 +271,13 @@ html, body, #root {
 /* ===== CHAT INPUT STYLES - BLACK THEME WITH GREY ACCENTS ===== */
 .chat-input-container {
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   margin: 2rem auto 0;
 }
 
 .chat-input-wrapper {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   background-color: #1a1a1a;
   border: 1px solid #333;
   border-radius: 12px;
@@ -291,7 +291,7 @@ html, body, #root {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-.chat-input {
+.chat-textarea {
   flex: 1;
   background: transparent;
   border: none;
@@ -300,47 +300,71 @@ html, body, #root {
   font-size: 1rem;
   padding: 0.75rem 1rem;
   font-family: 'Orbitron', sans-serif;
+  resize: none;
+  overflow-y: hidden;
+  min-height: 48px;
+  max-height: 168px; /* 7 lines * 24px line height */
+  line-height: 24px;
 }
 
-.chat-input::placeholder {
+.chat-textarea::placeholder {
   color: #888;
   opacity: 0.8;
 }
 
-.chat-input:focus {
+.chat-textarea:focus {
   color: #fff;
 }
 
-.microphone-button {
+.chat-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem;
+}
+
+.microphone-button,
+.send-button {
   background: transparent;
   border: none;
   color: #888;
   cursor: pointer;
   padding: 0.5rem;
-  margin-left: 0.5rem;
   border-radius: 50%;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 36px;
+  height: 36px;
 }
 
-.microphone-button:hover {
+.microphone-button:hover,
+.send-button:hover {
   color: #fff;
   background-color: #333;
   transform: scale(1.1);
 }
 
-.microphone-button:active {
+.microphone-button:active,
+.send-button:active {
   color: #4ade80;
   background-color: #444;
   transform: scale(0.95);
 }
 
+.send-button {
+  color: #60a5fa;
+}
+
+.send-button:hover {
+  color: #93c5fd;
+}
+
 /* Chat input responsive styles */
 @media (max-width: 768px) {
   .chat-input-container {
-    max-width: 90%;
+    max-width: 50%;
     margin: 1.5rem auto 0;
   }
   
@@ -348,13 +372,16 @@ html, body, #root {
     padding: 0.4rem;
   }
   
-  .chat-input {
+  .chat-textarea {
     font-size: 0.9rem;
     padding: 0.6rem 0.8rem;
+    min-height: 42px;
   }
   
-  .microphone-button {
+  .microphone-button,
+  .send-button {
+    width: 32px;
+    height: 32px;
     padding: 0.4rem;
-    margin-left: 0.4rem;
   }
 }
