@@ -191,7 +191,7 @@ html, body, #root {
 }
 
 .energy-doc-page-heading {
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   margin-bottom: 1.5rem;
   color: white;
 }
@@ -265,5 +265,96 @@ html, body, #root {
   .energy-doc-page-text {
     font-size: 1rem;
     padding: 0 1rem;
+  }
+}
+
+/* ===== CHAT INPUT STYLES - BLACK THEME WITH GREY ACCENTS ===== */
+.chat-input-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto 0;
+}
+
+.chat-input-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.chat-input-wrapper:hover {
+  border-color: #555;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.chat-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e0e0e0;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.chat-input::placeholder {
+  color: #888;
+  opacity: 0.8;
+}
+
+.chat-input:focus {
+  color: #fff;
+}
+
+.microphone-button {
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-left: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.microphone-button:hover {
+  color: #fff;
+  background-color: #333;
+  transform: scale(1.1);
+}
+
+.microphone-button:active {
+  color: #4ade80;
+  background-color: #444;
+  transform: scale(0.95);
+}
+
+/* Chat input responsive styles */
+@media (max-width: 768px) {
+  .chat-input-container {
+    max-width: 90%;
+    margin: 1.5rem auto 0;
+  }
+  
+  .chat-input-wrapper {
+    padding: 0.4rem;
+  }
+  
+  .chat-input {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.8rem;
+  }
+  
+  .microphone-button {
+    padding: 0.4rem;
+    margin-left: 0.4rem;
   }
 }

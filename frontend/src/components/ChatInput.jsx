@@ -1,0 +1,55 @@
+import React, { useState } from 'react';
+
+export const ChatInput = ({ onSendMessage }) => {
+  const [inputText, setInputText] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (inputText.trim()) {
+      onSendMessage(inputText);
+      setInputText('');
+    }
+  };
+
+  const handleMicrophoneClick = () => {
+    console.log('Microphone clicked - voice recording functionality to be added');
+    // Placeholder for voice recording functionality
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="chat-input-form">
+      <div className="chat-input-container">
+        <input
+          type="text"
+          className="chat-input"
+          placeholder="Ask Energy Doc anything..."
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+        />
+        <button
+          type="button"
+          className="microphone-button"
+          onClick={handleMicrophoneClick}
+          aria-label="Voice input"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 1C10.8954 1 10 1.89543 10 3V12C10 13.1046 10.8954 14 12 14C13.1046 14 14 13.1046 14 12V3C14 1.89543 13.1046 1 12 1Z"
+              fill="currentColor"
+            />
+            <path
+              d="M19 10V12C19 15.866 15.866 19 12 19C8.13401 19 5 15.866 5 12V10C5 9.44772 4.55228 9 4 9C3.44772 9 3 9.44772 3 10V12C3 16.971 7.02901 21 12 21C16.971 21 21 16.971 21 12V10C21 9.44772 20.5523 9 20 9C19.4477 9 19 9.44772 19 10Z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+      </div>
+    </form>
+  );
+};

@@ -2,12 +2,18 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
 import { FileUpload } from "../components/FileUpload";
+import { ChatInput } from "../components/ChatInput";
 
 function EnergyDocPage() {
   const navigate = useNavigate();
 
   const goBackHome = () => {
     navigate("/");
+  };
+
+  const handleSendMessage = (message) => {
+    console.log("Message sent:", message);
+    // Handle message sending logic here
   };
 
   return (
@@ -28,6 +34,8 @@ function EnergyDocPage() {
         <div className="file-upload-wrapper">
           <FileUpload />
         </div>
+
+        <ChatInput onSendMessage={handleSendMessage} />
       </div>
     </div>
   );
