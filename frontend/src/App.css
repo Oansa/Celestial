@@ -62,7 +62,6 @@ html, body, #root {
   margin-bottom: 10rem;
   text-align: center;
   transform: translateY(500%);
-
 }
 
 /* ===== NEW LAYOUT: AVATAR & TEXT LEFT, BUTTON RIGHT ===== */
@@ -208,70 +207,10 @@ html, body, #root {
   margin-top: 2rem;
 }
 
-/* Alternative positioning options - uncomment as needed */
-
-/* Center content vertically and horizontally */
-/*
-.energy-doc-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  margin: 0;
-}
-*/
-
-/* Align content to top-left */
-/*
-.energy-doc-content {
-  align-items: flex-start;
-  justify-content: flex-start;
-  text-align: left;
-  margin-top: 6rem;
-  margin-left: 2rem;
-}
-*/
-
-/* Align content to top-right */
-/*
-.energy-doc-content {
-  align-items: flex-end;
-  justify-content: flex-start;
-  text-align: right;
-  margin-top: 6rem;
-  margin-right: 2rem;
-}
-*/
-
-/* Align content to bottom-center */
-/*
-.energy-doc-content {
-  justify-content: flex-end;
-  margin-bottom: 4rem;
-}
-*/
-
-/* Responsive adjustments for mobile */
-@media (max-width: 768px) {
-  .energy-doc-content {
-    padding: 1rem;
-    margin-top: 3rem;
-  }
-  
-  .energy-doc-page-heading {
-    font-size: 2rem;
-  }
-  
-  .energy-doc-page-text {
-    font-size: 1rem;
-    padding: 0 1rem;
-  }
-}
-
 /* ===== CHAT INPUT STYLES - BLACK THEME WITH GREY ACCENTS ===== */
 .chat-input-container {
   width: 100%;
-  max-width: 800px;
+  max-width: 900px; /* Increased from 800px to make it wider */
   margin: 2rem auto 0;
 }
 
@@ -301,10 +240,11 @@ html, body, #root {
   padding: 0.75rem 1rem;
   font-family: 'Orbitron', sans-serif;
   resize: none;
-  overflow-y: hidden;
+  overflow-y: hidden; /* Hide scroll indicator */
   min-height: 48px;
   max-height: 168px; /* 7 lines * 24px line height */
   line-height: 24px;
+  width: 100%; /* Ensure it takes full width */
 }
 
 .chat-textarea::placeholder {
@@ -364,7 +304,7 @@ html, body, #root {
 /* Chat input responsive styles */
 @media (max-width: 768px) {
   .chat-input-container {
-    max-width: 50%;
+    max-width: 95%;
     margin: 1.5rem auto 0;
   }
   
