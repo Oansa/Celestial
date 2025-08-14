@@ -88,5 +88,42 @@ def health():
     """Health check endpoint"""
     return jsonify({'status': 'healthy'})
 
+@app.route('/run-main', methods=['POST'])
+def run_main():
+    """Endpoint to run main.py script"""
+    try:
+        import subprocess
+        import sys
+        
+        # Run main.py using the current Python interpreter
+        result = subprocess.run(
+            [sys.executable, 'main.py'],
+            capture_output=True,
+            text=True,
+            timeout=150,  # Increase timeout to 150 seconds
+            encoding='utf-8'  # Specify encoding
+        )
+        
+        print("STDOUT:", result.stdout)  # Log the standard output
+        print("STDERR:", result.stderr)  # Log the standard error
+        
+        return jsonify({
+            'success': result.returncode == 0,
+            'stdout': result.stdout,
+            'stderr': result.stderr,
+            'return_code': result.returncode
+        })
+        
+    except subprocess.TimeoutExpired:
+        return jsonify({
+            'success': False,
+            'error': 'Script execution timed out'
+        }), 408
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

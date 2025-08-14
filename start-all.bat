@@ -10,7 +10,7 @@ echo Dependencies installed!
 
 echo.
 echo [2/3] Starting Backend (main.py terminal)...
-start cmd /k "title Backend Terminal Server && python backend_main_terminal.py"
+start cmd /k "title Backend Terminal Server && python backend_api.py"
 
 echo.
 echo [3/3] Starting Frontend...
@@ -20,7 +20,7 @@ start cmd /k "title Frontend Server && npm run dev"
 echo.
 echo ========================================
 echo System is starting...
-echo Backend: http://localhost:5003
+echo Backend: http://localhost:5001
 echo Frontend: http://localhost:5173
 echo Terminal Page: http://localhost:5173/terminal
 echo ========================================

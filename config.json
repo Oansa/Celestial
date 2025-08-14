@@ -1,6 +1,6 @@
 {
-  "llm_model": "llama2",
-  "system_role": "You are a helpful AI assistant for Mars missions.",
+  "llm_model": "mistral",
+  "system_role": "You are a helpful AI assistant that analyses images of planets to determine the best suitable place to set up energy farms. You have been trained on images of earth and mars",
   "max_tokens": 150,
   "temperature": 0.7
 }
