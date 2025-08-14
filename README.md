@@ -1,104 +1,109 @@
-# Celestial – Your AI Companion for Space Exploration
+# Celestial – AI Energy Farm Site Selector
 
-**Welcome to Celestial**,
-An AI agent custom-built to assist astronauts in deep space expeditions. Whether on the Moon, Mars, or beyond, Celestial is designed to serve as your intelligent, always-alert co-astronaut.
+**Welcome to Celestial**,  
+An AI-powered system that analyzes satellite imagery and planetary data to identify optimal locations for setting up energy farms on Earth, the Moon, and beyond.
 
+## What Powers Celestial?
 
+* **YOLOv8 by Ultralytics**: Advanced computer vision for analyzing satellite imagery to detect terrain features, solar exposure patterns, and environmental conditions
+* **Satellite Data Processing**: Integration with satellite imagery APIs and planetary datasets for comprehensive site analysis
+* **Machine Learning Models**: Trained models that evaluate multiple factors including solar irradiance, terrain slope, dust coverage, and accessibility
 
-##  What Powers Celestial?
+## How It Works
 
-* **YOLOv8 by Ultralytics**:
-  Empowers Celestial with cutting-edge computer vision, enabling real-time environmental awareness, object detection, and visual interpretation in unfamiliar planetary terrain.
+Celestial processes satellite imagery and planetary data to:
 
-* **Ollama's LLM Integration**:
-  Provides natural language capabilities, allowing astronauts to interact with Celestial using spoken language. This means hands-free, voice-activated logic and assistance — ideal for space missions.
+1. **Analyze Solar Potential**: Calculate solar irradiance levels and optimal panel orientations
+2. **Assess Terrain Suitability**: Evaluate slope, elevation, and surface stability for energy infrastructure
+3. **Environmental Factors**: Consider dust storms, temperature variations, and seasonal changes
+4. **Accessibility Analysis**: Determine proximity to existing infrastructure and transportation routes
+5. **Risk Assessment**: Identify potential hazards like dust accumulation or geological instability
 
+## Key Features
 
+### Energy Farm Site Selection
+- **Solar Farm Identification**: Pinpoint locations with maximum solar exposure and minimal shading
+- **Wind Farm Potential**: Analyze wind patterns and terrain for optimal turbine placement
+- **Geothermal Prospects**: Identify areas with potential geothermal energy sources
+- **Hybrid Systems**: Recommend combinations of renewable energy sources
 
-##  How It Works
+### Data Sources
+- **Satellite Imagery**: High-resolution images from Mars Reconnaissance Orbiter, Lunar Reconnaissance Orbiter
+- **Topographical Data**: Digital elevation models and terrain analysis
+- **Environmental Data**: Temperature, radiation, and atmospheric conditions
+- **Geological Surveys**: Surface composition and stability assessments
 
-Celestial stays online and operates in **idle mode** by constantly monitoring and capturing data from its surroundings.
+### Analysis Capabilities
+- **Real-time Processing**: Analyze new satellite data as it becomes available
+- **Multi-criteria Evaluation**: Weighted scoring system for site suitability
+- **Predictive Modeling**: Forecast long-term energy generation potential
+- **Interactive Mapping**: Visual site selection with detailed reports
 
-Upon a user prompt, for example, when an astronaut asks a question, Celestial processes the input alongside current environmental visuals to deliver an informed, context-aware response. It can also capture new images on request to enhance its understanding of the scene.
+## Use Case: Mars Energy Infrastructure
 
+Celestial is designed to support the establishment of renewable energy infrastructure on Mars by:
 
+- **Solar Array Placement**: Identifying flat, stable surfaces with maximum sun exposure
+- **Dust Storm Mitigation**: Locating sites with natural wind barriers or minimal dust accumulation
+- **Temperature Optimization**: Finding areas with optimal thermal conditions for equipment longevity
+- **Resource Proximity**: Ensuring proximity to water sources and existing settlements
+- **Expansion Planning**: Scalable site selection for future energy needs
 
-##  Use Case: A Co-Astronaut on Mars
+## Technical Architecture
 
-Celestial is engineered with one bold ambition: **to be deployed in interplanetary missions** particularly Mars and the Moon.
+### Backend Services
+- **Satellite Data API**: Integration with planetary data repositories
+- **Image Processing Pipeline**: Automated analysis of satellite imagery
+- **Machine Learning Models**: Site suitability prediction algorithms
+- **Geospatial Analysis**: Advanced terrain and environmental modeling
 
-### Key Functions:
+### Frontend Interface
+- **Interactive Maps**: Visual site selection with overlay data
+- **Detailed Reports**: Comprehensive site analysis and recommendations
+- **Export Capabilities**: Generate site reports for mission planning
+- **Real-time Updates**: Live data integration and analysis updates
 
-* **Astronaut Health Monitoring**: Keep tabs on vital signs and alert in case of anomalies.
-* **Real-time Navigation Assistance**: Guide crews through uncharted environments with confidence.
-* **Hazard Detection**: Warn astronauts about environmental threats like dust storms or radiation spikes.
-* **Planetary Intelligence**: Act as a knowledge base for newly discovered elements and terrain.
-* **On-demand Analysis**: From soil scans to alien tech (we’re hopeful!), Celestial will observe, analyze, and report.
+## Getting Started
 
-> One mind. All the data. Full safety and reliability for humans in space. That’s Celestial.
+### Prerequisites
+- Python 3.8+
+- pip
+- Git
+- Satellite data access credentials (optional)
 
+### Installation
+```bash
+git clone https://github.com/yourusername/celestial-energy-selector.git
+cd celestial-energy-selector
+pip install -r requirements.txt
+```
 
+### Configuration
+1. Set up satellite data API access (optional)
+2. Configure analysis parameters in `config.json`
+3. Load satellite imagery datasets
 
-##  The Future of Celestial
+### Usage
+```bash
+python main.py --mode energy-analysis --target mars
+```
 
-We envision Celestial as:
+## Supported Planets
+- **Mars**: Complete analysis suite for Martian surface
+- **Moon**: Lunar site selection with regolith considerations
+- **Earth**: Terrestrial renewable energy site planning
 
-* The **central hub** for space exploration data.
-* An autonomous system to **govern space activities**, including:
+## Future Enhancements
+- **Multi-planet Analysis**: Expand to additional celestial bodies
+- **Real-time Satellite Integration**: Direct data feeds from active missions
+- **Collaborative Planning**: Multi-user site selection and planning tools
+- **Energy Grid Simulation**: Model energy distribution networks
 
-  * Building extraterrestrial infrastructure
-  * Enhancing habitability on foreign planets
-  * Supporting space mining operations
-  * Managing crewed missions safely 
-  * Harnessing new methods of generating Energy on Mars
-* A guide to enhancing organism's characteristics to improve rate of survival on Mars and the Moon, i.e: Engage in biohacking activities    that aim to improve the sustainability of human, plant and animal species on Mars.
+## Contributing
+We welcome contributions from the space exploration and renewable energy communities.
 
-With Celestial, humanity takes a leap closer to **thriving beyond Earth**.
+## License
+MIT License - Open source for space exploration advancement
 
-### HOW TO SET IT UP
-
-### ✅ Prerequisites
-
-* Python 3.8+
-* pip
-* Git
-* A GPU (recommended) for optimal performance
-
-### 📁 Clone the Repository
-
-
-Terminal run: git clone [https://github.com/yourusername/celestial-ai.git](https://github.com/Oansa/Celestial)
-
-Terminal run: cd celestial-ai
-
-
-### 📦 Install Dependencies
-
-
-Terminal run: pip install -r requirements.txt
- 
-
-> Make sure to install [Ultralytics YOLOv8](https://docs.ultralytics.com) and [Ollama](https://ollama.com) as well.
-
-###  Set Up Ollama and LLaMA2
-
-1. Download and install Ollama: [https://ollama.com/download](https://ollama.com/download)
-2. Run your language model (e.g., LLaMA2):
-
-
-Terminal run: ollama run llama2
-
-
-###  Start Celestial
-
-
-Terminal run: python main.py
-
-
-Now you're ready to explore the universe with your AI co-pilot. 
-
-
-**Decentralized AI for decentralized humanity**
-*This is Celestial.* 
-
-
+---
+**Celestial: Powering the future of space-based renewable energy**
