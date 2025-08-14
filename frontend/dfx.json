@@ -1,0 +1,17 @@
+{
+  "canisters": {
+    "Celestial_frontend": {
+      "type": "assets",
+      "source": ["dist"],
+      "build": "npm run build"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}

@@ -1,0 +1,22 @@
+{
+  "assets": [
+    {
+      "match": "**/*",
+      "cache": {
+        "max_age": 31536000
+      }
+    },
+    {
+      "match": "**/*.@(js|css|woff|woff2|ttf|eot|svg|png|jpg|jpeg|gif|ico|webp)",
+      "cache": {
+        "max_age": 31536000
+      }
+    },
+    {
+      "match": "**/*.@(html|json)",
+      "cache": {
+        "max_age": 3600
+      }
+    }
+  ]
+}
