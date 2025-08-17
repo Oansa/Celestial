@@ -2,7 +2,7 @@ import { cn } from "../lib/utils";
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { IconUpload } from "@tabler/icons-react";
-import { useDropzone } from "react-dropzone"; // ✅ Correct import
+import { useDropzone } from "react-dropzone";
 
 const mainVariant = {
   initial: {
@@ -25,13 +25,17 @@ const secondaryVariant = {
   },
 };
 
-export const FileUpload = ({ onChange }) => {
+export const FileUpload = ({ onChange, onImageUpload }) => {
   const [files, setFiles] = useState([]);
   const fileInputRef = useRef(null);
 
   const handleFileChange = (newFiles) => {
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
     onChange && onChange(newFiles);
+    
+    if (newFiles.length > 0 && onImageUpload) {
+      onImageUpload(URL.createObjectURL(newFiles[0]));
+    }
   };
 
   const handleClick = () => {
@@ -41,6 +45,9 @@ export const FileUpload = ({ onChange }) => {
   const { getRootProps, isDragActive } = useDropzone({
     multiple: false,
     noClick: true,
+    accept: {
+      'image/*': []
+    },
     onDrop: handleFileChange,
     onDropRejected: (error) => {
       console.log(error);
@@ -58,27 +65,28 @@ export const FileUpload = ({ onChange }) => {
           ref={fileInputRef}
           id="file-upload-handle"
           type="file"
+          accept="image/*"
           onChange={(e) =>
             handleFileChange(Array.from(e.target.files || []))
           }
           className="hidden"
         />
 
-        {/* 🧩 Background grid */}
+        {/* Background grid */}
         <div className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,white,transparent)]">
           <GridPattern />
         </div>
 
-        {/* 🧩 Text and icon */}
+        {/* Text and icon */}
         <div className="flex flex-col items-center justify-center">
           <p className="relative z-20 font-sans font-bold text-neutral-700 dark:text-neutral-300 text-base">
-            Upload file
+            Upload image
           </p>
           <p className="upload-instruction text-neutral-400 dark:text-neutral-400 text-base mt-2">
-            Drag or drop your files here or click to upload
+            Drag or drop your image here or click to upload
           </p>
 
-          {/* 🧩 Uploaded file(s) or empty state */}
+          {/* Uploaded file(s) or empty state */}
           <div className="relative w-full mt-10 max-w-xl mx-auto">
             {files.length > 0 &&
               files.map((file, idx) => (
@@ -131,7 +139,7 @@ export const FileUpload = ({ onChange }) => {
                 </motion.div>
               ))}
 
-            {/* 🧩 Empty state upload icon */}
+            {/* Empty state upload icon */}
             {!files.length && (
               <motion.div
                 layoutId="file-upload"
@@ -161,7 +169,7 @@ export const FileUpload = ({ onChange }) => {
               </motion.div>
             )}
 
-            {/* ✅ Drag overlay appears only when dragging */}
+            {/* Drag overlay appears only when dragging */}
             {isDragActive && (
               <motion.div
                 variants={secondaryVariant}

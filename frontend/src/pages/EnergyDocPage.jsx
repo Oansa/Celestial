@@ -1,20 +1,90 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
+import "../styles/chat.css";
 import { FileUpload } from "../components/FileUpload";
 import { ChatInput } from "../components/ChatInput";
-import { runMainScript } from "../services/api";
+import { ChatDisplay } from "../components/ChatDisplay";
+import { runMainScript, sendChatMessage } from "../services/api";
 
 function EnergyDocPage() {
   const navigate = useNavigate();
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState(null);
 
   const goBackHome = () => {
     navigate("/");
   };
 
-  const handleSendMessage = (message) => {
-    console.log("Message sent:", message);
-    // Handle message sending logic here
+  const handleSendMessage = async (message) => {
+    if (!message.trim()) return;
+
+    // Add user message to chat
+    const userMessage = {
+      text: message,
+      sender: 'user',
+      timestamp: new Date().toISOString()
+    };
+    
+    setMessages(prev => [...prev, userMessage]);
+    setIsLoading(true);
+
+    try {
+      // Get image data if available
+      let imageData = null;
+      if (uploadedImage) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = uploadedImage;
+        });
+        
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        imageData = canvas.toDataURL('image/jpeg');
+      }
+
+      // Send message to backend
+      const response = await sendChatMessage(message, imageData);
+      
+      if (response.error) {
+        throw new Error(response.error);
+      }
+
+      // Add AI response to chat
+      const aiMessage = {
+        text: response.ai_response || "I couldn't generate a response. Please try again.",
+        sender: 'ai',
+        timestamp: new Date().toISOString(),
+        detections: response.detections || []
+      };
+      
+      setMessages(prev => [...prev, aiMessage]);
+      
+    } catch (error) {
+      console.error('Error sending message:', error);
+      
+      // Add error message to chat
+      const errorMessage = {
+        text: `Error: ${error.message || 'Failed to get response from Energy Doc'}`,
+        sender: 'ai',
+        timestamp: new Date().toISOString()
+      };
+      
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleImageUpload = (imageUrl) => {
+    setUploadedImage(imageUrl);
   };
 
   const handleStartMain = async () => {
@@ -52,7 +122,7 @@ function EnergyDocPage() {
         </p>
 
         <div className="file-upload-wrapper">
-          <FileUpload />
+          <FileUpload onImageUpload={handleImageUpload} />
         </div>
 
         <div style={{ margin: '20px 0', textAlign: 'center' }}>
@@ -75,7 +145,10 @@ function EnergyDocPage() {
           </button>
         </div>
 
-        <ChatInput onSendMessage={handleSendMessage} />
+        <div className="chat-section" style={{ marginTop: '30px' }}>
+          <ChatDisplay messages={messages} isLoading={isLoading} />
+          <ChatInput onSendMessage={handleSendMessage} />
+        </div>
       </div>
     </div>
   );
