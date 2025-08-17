@@ -63,3 +63,36 @@ export const sendChatMessage = async (message, imageData = null, useVoice = fals
     throw error;
   }
 };
+
+// Create apiService object for EnergyDocComposer
+export const apiService = {
+  sendEnergyMessage: async ({ text, inputMode, language }) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/energy-message`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text,
+          inputMode,
+          language
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Energy message API call failed:', error);
+      throw error;
+    }
+  },
+  
+  // Add other API methods as needed
+  analyzeImage,
+  runMainScript,
+  sendChatMessage
+};

@@ -1,90 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import "../App.css";
-import "../styles/chat.css";
+import { ChevronLeft } from "lucide-react";
+import EnergyDocComposer from "../components/EnergyDocComposer";
 import { FileUpload } from "../components/FileUpload";
-import { ChatInput } from "../components/ChatInput";
-import { ChatDisplay } from "../components/ChatDisplay";
-import { runMainScript, sendChatMessage } from "../services/api";
+import { runMainScript } from "../services/api";
+import "../styles/energyDocPage.css";
 
 function EnergyDocPage() {
   const navigate = useNavigate();
-  const [messages, setMessages] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [uploadedImage, setUploadedImage] = useState(null);
 
   const goBackHome = () => {
     navigate("/");
-  };
-
-  const handleSendMessage = async (message) => {
-    if (!message.trim()) return;
-
-    // Add user message to chat
-    const userMessage = {
-      text: message,
-      sender: 'user',
-      timestamp: new Date().toISOString()
-    };
-    
-    setMessages(prev => [...prev, userMessage]);
-    setIsLoading(true);
-
-    try {
-      // Get image data if available
-      let imageData = null;
-      if (uploadedImage) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const img = new Image();
-        
-        await new Promise((resolve, reject) => {
-          img.onload = resolve;
-          img.onerror = reject;
-          img.src = uploadedImage;
-        });
-        
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-        imageData = canvas.toDataURL('image/jpeg');
-      }
-
-      // Send message to backend
-      const response = await sendChatMessage(message, imageData);
-      
-      if (response.error) {
-        throw new Error(response.error);
-      }
-
-      // Add AI response to chat
-      const aiMessage = {
-        text: response.ai_response || "I couldn't generate a response. Please try again.",
-        sender: 'ai',
-        timestamp: new Date().toISOString(),
-        detections: response.detections || []
-      };
-      
-      setMessages(prev => [...prev, aiMessage]);
-      
-    } catch (error) {
-      console.error('Error sending message:', error);
-      
-      // Add error message to chat
-      const errorMessage = {
-        text: `Error: ${error.message || 'Failed to get response from Energy Doc'}`,
-        sender: 'ai',
-        timestamp: new Date().toISOString()
-      };
-      
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleImageUpload = (imageUrl) => {
-    setUploadedImage(imageUrl);
   };
 
   const handleStartMain = async () => {
@@ -107,49 +33,43 @@ function EnergyDocPage() {
   };
 
   return (
-    <div className="energy-doc-page-container">
-      <button className="back-button" onClick={goBackHome}>
-        ← Home
-      </button>
+    <div className="energy-doc-page">
+      <header className="energy-doc-header">
+        <button 
+          onClick={goBackHome} 
+          className="back-button"
+        >
+          <ChevronLeft className="w-5 h-5 mr-1" />
+          Back
+        </button>
+        <h1 className="energy-doc-title">Energy Document Assistant</h1>
+      </header>
 
-      <div className="energy-doc-content">
-        <h1 className="energy-doc-page-heading">Welcome, I'm Energy Doc</h1>
+      <main className="energy-doc-content">
+        <div className="welcome-section">
+          <h2>Welcome to Energy Document Assistant</h2>
+          <p>
+            I am your AI assistant for identifying areas of high energy potential.
+            My goal is to help humanity survive as a multiplanetary society by
+            providing insights into energy rich zones.
+          </p>
+          
+          <div className="file-upload-container">
+            <FileUpload onImageUpload={() => {}} />
+          </div>
 
-        <p className="energy-doc-page-text">
-          I am your AI assistant for identifying areas of high energy potential.
-          My goal is to help humanity survive as a multiplanetary society by
-          providing insights into energy rich zones.
-        </p>
-
-        <div className="file-upload-wrapper">
-          <FileUpload onImageUpload={handleImageUpload} />
+          <div className="action-buttons">
+            <button 
+              onClick={handleStartMain}
+              className="start-energy-doc-btn"
+            >
+              Start Energy Doc
+            </button>
+          </div>
         </div>
 
-        <div style={{ margin: '20px 0', textAlign: 'center' }}>
-          <button 
-            className="start-button" 
-            onClick={handleStartMain}
-            style={{
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              padding: '12px 24px',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '16px',
-              fontWeight: 'bold',
-              marginTop: '20px'
-            }}
-          >
-            Start Energy Doc
-          </button>
-        </div>
-
-        <div className="chat-section" style={{ marginTop: '30px' }}>
-          <ChatDisplay messages={messages} isLoading={isLoading} />
-          <ChatInput onSendMessage={handleSendMessage} />
-        </div>
-      </div>
+        <EnergyDocComposer />
+      </main>
     </div>
   );
 }

@@ -1,51 +1,50 @@
 import React, { useState, useEffect, useRef } from 'react';
-import io from 'socket.io-client';
+import terminalService from '../services/terminalService';
 
 const MainPyTerminal = () => {
   const [messages, setMessages] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   
-  const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    socketRef.current = io('http://localhost:5003');
+    // Connect to main.py terminal
+    terminalService.connectMainPy();
 
-    socketRef.current.on('connect', () => {
+    // Set up listeners
+    terminalService.addListener('mainPy', 'connected', () => {
       setIsConnected(true);
       addMessage('system', 'Connected to main.py terminal server');
     });
 
-    socketRef.current.on('connected', (data) => {
-      addMessage('system', `Connected to session: ${data.session_id}`);
-    });
-
-    socketRef.current.on('terminal_output', (data) => {
-      addMessage(data.type, data.data);
-    });
-
-    socketRef.current.on('main_py_started', (data) => {
+    terminalService.addListener('mainPy', 'main_py_started', (event, data) => {
       setIsRunning(data.success);
       if (data.success) {
         addMessage('system', 'main.py started successfully');
       }
     });
 
-    socketRef.current.on('main_py_stopped', () => {
+    terminalService.addListener('mainPy', 'main_py_stopped', () => {
       setIsRunning(false);
       addMessage('system', 'main.py stopped');
     });
 
-    socketRef.current.on('disconnect', () => {
+    terminalService.addListener('mainPy', 'output', (event, data) => {
+      addMessage(data.type, data.data);
+    });
+
+    terminalService.addListener('mainPy', 'disconnected', () => {
       setIsConnected(false);
       addMessage('system', 'Disconnected from main.py terminal server');
     });
 
     return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-      }
+      terminalService.removeListener('mainPy', 'connected');
+      terminalService.removeListener('mainPy', 'main_py_started');
+      terminalService.removeListener('mainPy', 'main_py_stopped');
+      terminalService.removeListener('mainPy', 'output');
+      terminalService.removeListener('mainPy', 'disconnected');
     };
   }, []);
 
@@ -63,17 +62,12 @@ const MainPyTerminal = () => {
   };
 
   const handleStartMainPy = () => {
-    if (!socketRef.current) return;
-    
     addMessage('system', 'Starting main.py...');
-    socketRef.current.emit('start_main_py');
-    socketRef.current.emit('start_output_stream');
+    terminalService.startMainPy();
   };
 
   const handleStopMainPy = () => {
-    if (!socketRef.current) return;
-    
-    socketRef.current.emit('stop_main_py');
+    terminalService.stopMainPy();
   };
 
   return (

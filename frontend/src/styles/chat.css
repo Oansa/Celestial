@@ -88,23 +88,51 @@
 
 .chat-input {
   flex: 1;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
   border-radius: 2rem;
   padding: 0.75rem 1.5rem;
-  color: #ffffff;
+  color: #495057;
   font-size: 1rem;
   outline: none;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .chat-input:focus {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: #ffffff;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .chat-input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+/* Light theme for EnergyDocComposer */
+.energy-doc-input {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 2rem;
+  padding: 0.75rem 1.5rem;
+  color: #495057;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  width: 100%;
+}
+
+.energy-doc-input:focus {
+  background: #ffffff;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.energy-doc-input::placeholder {
+  color: #6c757d;
+  font-size: 0.875rem;
 }
 
 .send-button {

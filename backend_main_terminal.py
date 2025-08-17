@@ -146,5 +146,15 @@ def handle_start_output_stream():
                     continue
     threading.Thread(target=stream_output, daemon=True).start()
 
+@app.route('/api/chat/stream', methods=['POST'])
+def chat_stream():
+    data = request.get_json()
+    model = data.get('model')
+    prompt = data.get('prompt')
+
+    # Here you would implement the logic to handle the chat request
+    # For now, let's just return a mock response
+    return jsonify({"response": f"Received prompt: {prompt} with model: {model}"})
+
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=5003)
