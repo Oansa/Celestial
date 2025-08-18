@@ -32,9 +32,11 @@ export const runMainScript = async () => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
-    return await response.json();
+    const data = await response.json();
+    console.log('[API] run-main response:', data);
+    return data;
   } catch (error) {
-    console.error('API call failed:', error);
+    console.error('[API] runMainScript failed:', error);
     throw error;
   }
 };

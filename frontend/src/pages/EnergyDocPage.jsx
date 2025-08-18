@@ -56,22 +56,28 @@ function EnergyDocPage() {
       if (result.success) {
         console.log("[INFO] main.py executed successfully!");
         console.log("Output:", result.stdout);
+        
+        // Extract and display the actual speech output
+        const speechOutput = result.stdout || "Mars AI Assistant started successfully!";
+        const cleanOutput = speechOutput.trim();
+        
         setMessages(prev => [...prev, { 
           role: "assistant", 
-          content: "🚀 Mars AI Assistant started successfully! Ready to analyze energy documents." 
+          content: `🚀 ${cleanOutput}` 
         }]);
       } else {
         console.error("[ERROR] main.py execution failed:", result.stderr);
+        const errorMessage = result.stderr || "Failed to start Mars AI Assistant";
         setMessages(prev => [...prev, { 
           role: "assistant", 
-          content: "❌ Failed to start Mars AI Assistant. Please check the console for details." 
+          content: `❌ ${errorMessage}` 
         }]);
       }
     } catch (error) {
       console.error("[ERROR] Failed to start main.py:", error);
       setMessages(prev => [...prev, { 
         role: "assistant", 
-        content: "⚠️ Error starting Mars AI Assistant: " + error.message 
+        content: `⚠️ Error starting Mars AI Assistant: ${error.message}` 
       }]);
     }
   };
