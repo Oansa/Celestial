@@ -13,7 +13,25 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Health check endpoint
+app.post('/run-main', (req, res) => {
+  // Logic to run main.py
+  const pythonProcess = spawn('python', ['main.py'], { shell: true });
+
+  pythonProcess.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+    res.status(200).json({ message: 'main.py executed successfully', output: data.toString() });
+  });
+
+  pythonProcess.stderr.on('data', (data) => {
+    console.error(`stderr: ${data}`);
+    res.status(500).json({ error: 'Error executing main.py', details: data.toString() });
+  });
+
+  pythonProcess.on('close', (code) => {
+    console.log(`main.py process exited with code ${code}`);
+  });
+});
+
 app.get('/health', (req, res) => {
   res.json({ ok: true });
 });

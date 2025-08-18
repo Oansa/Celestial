@@ -71,12 +71,12 @@ echo [OK] Node.js dependencies installed!
 
 :: Start services
 echo.
-echo [3/5] Starting Main.py Terminal Server...
-start "Main.py Terminal Server" cmd /k "color 0B && echo === Main.py Terminal Server === && python backend_main_terminal.py"
+echo [3/5] Starting Main Backend API Server...
+start "Main Backend API Server" cmd /k "color 0B && echo === Main Backend API Server (Port 5001) === && echo This server provides: && echo   - /run-main (POST) - Run main.py script && echo   - /chat (POST) - Chat functionality && echo   - /analyze (POST) - Image analysis && echo   - /health (GET) - Health check && echo. && python backend_api.py"
 
 echo.
-echo [4/5] Starting Backend Terminal Server...
-start "Backend Terminal Server" cmd /k "color 0C && echo === Backend Terminal Server === && python backend_terminal.py"
+echo [4/5] Starting Main.py Terminal Server...
+start "Main.py Terminal Server" cmd /k "color 0C && echo === Main.py Terminal Server (Port 5003) === && python backend_main_terminal.py"
 
 echo.
 echo [5/5] Starting Frontend Development Server...
@@ -91,9 +91,10 @@ echo 🚀 Space Explorer is Starting...
 echo ========================================
 echo.
 echo 📡 Services:
-echo    • Main Terminal Server: http://localhost:5003
-echo    • Backend Terminal Server: http://localhost:5002
+echo    • Main Backend API: http://localhost:5001
+echo    • Main.py Terminal: http://localhost:5003
 echo    • Frontend: http://localhost:5173
+echo    • EnergyDoc Page: http://localhost:5173/energy-doc
 echo    • Terminal Page: http://localhost:5173/terminal
 echo.
 echo 📝 Quick Commands:

@@ -88,6 +88,37 @@ def health():
     """Health check endpoint"""
     return jsonify({'status': 'healthy'})
 
+@app.route('/analyze', methods=['POST'])
+def analyze():
+    """Endpoint to analyze uploaded images"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
+        # Save file temporarily
+        with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False, dir=UPLOAD_FOLDER) as tmp_file:
+            file.save(tmp_file.name)
+            image_path = tmp_file.name
+        
+        # Detect objects in the image
+        detections = detect_objects(image_path)
+        
+        # Clean up temporary file
+        os.unlink(image_path)
+        
+        return jsonify({
+            'success': True,
+            'detections': detections,
+            'message': 'Image analyzed successfully'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/run-main', methods=['POST'])
 def run_main():
     """Endpoint to run main.py script"""
