@@ -12,8 +12,10 @@ function EnergyDocPage() {
     { role: "assistant", content: "Hello! I'm your Energy Document Assistant. How can I help you identify areas of high energy potential today?" },
   ]);
   const [input, setInput] = useState("");
+  const [isListening, setIsListening] = useState(false);
   const textareaRef = useRef(null);
   const chatEndRef = useRef(null);
+  const recognitionRef = useRef(null);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -28,6 +30,46 @@ function EnergyDocPage() {
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.lang = 'en-US';
+
+      recognitionRef.current.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setInput(prev => prev + transcript);
+      };
+
+      recognitionRef.current.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+  }, []);
+
+  const handleVoiceInput = () => {
+    if (!recognitionRef.current) {
+      alert('Speech recognition is not supported in your browser.');
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      recognitionRef.current.start();
+      setIsListening(true);
+    }
+  };
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -144,10 +186,11 @@ function EnergyDocPage() {
                 <Send className="w-5 h-5" />
               </button>
               <button
-                onClick={() => alert("Voice input coming soon!")}
-                className="action-btn secondary"
+                onClick={handleVoiceInput}
+                className={`action-btn secondary ${isListening ? 'listening' : ''}`}
+                title={isListening ? "Stop voice input" : "Start voice input"}
               >
-                <Mic className="w-5 h-5" />
+                <Mic className={`w-5 h-5 ${isListening ? 'text-red-500' : ''}`} />
               </button>
             </div>
           </div>
