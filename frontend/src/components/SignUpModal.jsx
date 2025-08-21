@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { signup } from '../services/auth';
+import { authenticate, getPrincipal, II_URL } from '../services/icAuth';
 import './SignUpModal.css';
 
 const SignUpModal = ({ isOpen, onClose, onSuccess }) => {
@@ -10,7 +11,9 @@ const SignUpModal = ({ isOpen, onClose, onSuccess }) => {
     internetId: ''
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isAuthLoading, setIsAuthLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [principal, setPrincipal] = useState(null);
 
   const validateForm = () => {
     const newErrors = {};
@@ -29,6 +32,30 @@ const SignUpModal = ({ isOpen, onClose, onSuccess }) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     setErrors(prev => ({ ...prev, [name]: '' }));
+  };
+
+  const handleInternetIdentityAuth = async () => {
+    setIsAuthLoading(true);
+    setErrors(prev => ({ ...prev, internetId: '' }));
+    
+    try {
+      await authenticate(II_URL.ic);
+      const userPrincipal = await getPrincipal();
+      if (userPrincipal) {
+        setPrincipal(userPrincipal);
+        setFormData(prev => ({ ...prev, internetId: userPrincipal }));
+      }
+    } catch (error) {
+      console.error('Internet Identity authentication failed:', error);
+      setErrors(prev => ({ ...prev, internetId: 'Authentication failed. Please try again.' }));
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+
+  const handleClearAuth = () => {
+    setPrincipal(null);
+    setFormData(prev => ({ ...prev, internetId: '' }));
   };
 
   const handleSubmit = async (e) => {
@@ -107,14 +134,30 @@ const SignUpModal = ({ isOpen, onClose, onSuccess }) => {
 
           <div className="form-group">
             <label>Internet Identity</label>
-            <input
-              type="text"
-              name="internetId"
-              value={formData.internetId}
-              onChange={handleInputChange}
-              placeholder="Enter your Internet Identity"
-              className={errors.internetId ? 'error' : ''}
-            />
+            {principal ? (
+              <div className="internet-identity-display">
+                <div className="identity-info">
+                  <span className="identity-label">Authenticated Principal:</span>
+                  <span className="identity-value">{principal}</span>
+                </div>
+                <button 
+                  type="button"
+                  className="clear-auth-button"
+                  onClick={handleClearAuth}
+                >
+                  Clear & Re-authenticate
+                </button>
+              </div>
+            ) : (
+              <button 
+                type="button"
+                className="internet-identity-button"
+                onClick={handleInternetIdentityAuth}
+                disabled={isAuthLoading}
+              >
+                {isAuthLoading ? 'Authenticating...' : 'Authenticate with Internet Identity'}
+              </button>
+            )}
             {errors.internetId && <span className="error-message">{errors.internetId}</span>}
           </div>
 
