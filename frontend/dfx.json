@@ -3,7 +3,12 @@
     "Celestial_frontend": {
       "type": "assets",
       "source": ["dist"],
-      "build": "npm run build"
+      "build": "npm run build",
+      "dependencies": ["UserAuth"]
+    },
+    "UserAuth": {
+      "main": "src/user_auth/main.mo",
+      "type": "motoko"
     }
   },
   "defaults": {

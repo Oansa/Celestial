@@ -16,9 +16,14 @@
       "type": "custom",
       "wasm": ".kybra/Celestial_backend/Celestial_backend.wasm"
     },
+    "UserAuth": {
+      "main": "src/user_auth/main.mo",
+      "type": "motoko"
+    },
     "Celestial_frontend": {
       "dependencies": [
-        "Celestial_backend"
+        "Celestial_backend",
+        "UserAuth"
       ],
       "source": [
         "src/Celestial_frontend/assets"

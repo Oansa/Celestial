@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dfinity/agent": "^3.2.1",
+    "@dfinity/auth-client": "^3.2.1",
+    "@dfinity/candid": "^3.2.1",
     "@tabler/icons-react": "^3.34.1",
     "@tailwindcss/vite": "^4.1.11",
     "clsx": "^2.1.1",

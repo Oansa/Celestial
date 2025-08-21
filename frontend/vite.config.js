@@ -1,10 +1,17 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
 
-
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(),tailwindcss(),
-],
+  plugins: [react()],
+  optimizeDeps: {
+    include: ['@dfinity/agent', '@dfinity/principal', '@dfinity/auth-client', '@dfinity/candid']
+  },
+  build: {
+    rollupOptions: {
+      external: []
+    }
+  },
+  ssr: {
+    noExternal: ['@dfinity/agent', '@dfinity/principal', '@dfinity/candid']
+  }
 })
