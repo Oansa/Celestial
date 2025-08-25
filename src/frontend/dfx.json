@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "Celestial_frontend": {
+      "type": "assets",
+      "source": ["dist"],
+      "build": "npm run build",
+      "dependencies": ["UserAuth"]
+    },
+    "UserAuth": {
+      "main": "src/user_auth/main.mo",
+      "type": "motoko"
+    },
+    "internet_identity": {
+      "type": "pull",
+      "id": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
