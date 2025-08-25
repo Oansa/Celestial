@@ -1,9 +1,0 @@
-openai
-torch
-torchvision
-Pillow
-pyttsx3
-speechrecognition
-pyaudio
-requests
-tqdm
