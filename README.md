@@ -103,6 +103,12 @@ you can also interact with the AI via speech just click the button to the left o
 ## Here is our website
 https://celestial-energy-5qhwsvj.gamma.site/
 
+## Here is our pitch video
+https://x.com/CelestialA20735/status/1960236594486522207
+
+## Here is our demo video
+https://mega.nz/file/StRBjYwT#Gfo7P9qrWPvc-ilbatNoGEPVy5xgL700RGre6pU350s
+
 ## Contributing
 We welcome contributions from the space exploration and renewable energy communities.
 
