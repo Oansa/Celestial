@@ -87,6 +87,9 @@ run dfx start
 open another terminal
 run dfx deploy
 ```
+## We are using ICP for:
+Frontend Hosting
+Data storage
 
 ### Usage
 ```bash
