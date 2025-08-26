@@ -73,25 +73,26 @@ Celestial is designed to support the establishment of renewable energy infrastru
 
 ### Installation
 ```bash
-git clone https://github.com/yourusername/celestial-energy-selector.git
-cd celestial-energy-selector
-pip install -r requirements.txt
+git clone https://github.com/Oansa/Celestial.git
+cd Celestial
+run start-all.bat
 ```
 
-### Configuration
-1. Set up satellite data API access (optional)
-2. Configure analysis parameters in `config.json`
-3. Load satellite imagery datasets
+### Running frontend on ICP
+If you are using a windows computer ensure wsl is installed and then:
+```bash
+cd frontend
+run wsl terminal
+run dfx start
+open another terminal
+run dfx deploy
+```
 
 ### Usage
 ```bash
-python main.py --mode energy-analysis --target mars
+upload an image for analysis and give a prompt for the AI to give back relevant output. 
+you can also interact with the AI via speech just click the button to the left of the text input field and the agent will ask for microphone access and take your speech input and it will also take a photo with your webcam and then give a response based on all these entries.
 ```
-
-## Supported Planets
-- **Mars**: Complete analysis suite for Martian surface
-- **Moon**: Lunar site selection with regolith considerations
-- **Earth**: Terrestrial renewable energy site planning
 
 ## Future Enhancements
 - **Multi-planet Analysis**: Expand to additional celestial bodies
@@ -104,9 +105,6 @@ https://celestial-energy-5qhwsvj.gamma.site/
 
 ## Contributing
 We welcome contributions from the space exploration and renewable energy communities.
-
-## License
-MIT License - Open source for space exploration advancement
 
 ---
 **Celestial: Powering the future of space-based renewable energy**
