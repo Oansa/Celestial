@@ -1,14 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import MessageBubble from '../components/MessageBubble';
 import ChatInput from '../components/ChatInput';
-import { useSSE } from '../hooks/useSSE';
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [model, setModel] = useState('llama2');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
-  const { start, stop, isRunning, text } = useSSE();
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -16,7 +14,7 @@ const ChatPage = () => {
   }, [messages]);
 
   const handleSend = async (prompt) => {
-    if (!prompt.trim() || isRunning) return;
+    if (!prompt.trim() || isLoading) return;
 
     // Add user message
     const userMessage = {
@@ -31,7 +29,7 @@ const ChatPage = () => {
       id: Date.now() + 1,
       role: 'assistant',
       content: '',
-      isStreaming: true,
+      isStreaming: false,
       timestamp: new Date().toISOString()
     };
 
@@ -39,51 +37,45 @@ const ChatPage = () => {
     setIsLoading(true);
 
     try {
-      // Start SSE streaming
-await start(`http://localhost:5003/api/chat/stream`, {
+      // Use the correct backend API endpoint
+      const response = await fetch('http://localhost:5001/chat', {
         method: 'POST',
-        body: { model, prompt }
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: prompt,
+          use_voice: false
+        })
       });
 
-      // Update assistant message with streaming content
-      let currentContent = '';
-      const updateInterval = setInterval(() => {
-        if (text !== currentContent) {
-          currentContent = text;
-          setMessages(prev => prev.map(msg => 
-            msg.id === assistantMessage.id 
-              ? { ...msg, content: text, isStreaming: true }
-              : msg
-          ));
-        }
-        
-        if (!isRunning) {
-          clearInterval(updateInterval);
-          setMessages(prev => prev.map(msg => 
-            msg.id === assistantMessage.id 
-              ? { ...msg, content: text, isStreaming: false }
-              : msg
-          ));
-          setIsLoading(false);
-        }
-      }, 100);
+      const data = await response.json();
+      
+      if (response.ok) {
+        // Update assistant message with AI response
+        setMessages(prev => prev.map(msg => 
+          msg.id === assistantMessage.id 
+            ? { ...msg, content: data.ai_response || "I couldn't generate a response. Please try again.", isStreaming: false }
+            : msg
+        ));
+      } else {
+        setMessages(prev => prev.map(msg => 
+          msg.id === assistantMessage.id 
+            ? { ...msg, content: `Error: ${data.error || 'Unknown error'}`, isStreaming: false }
+            : msg
+        ));
+      }
     } catch (err) {
       setMessages(prev => prev.map(msg => 
         msg.id === assistantMessage.id 
           ? { ...msg, content: `Error: ${err.message}`, isStreaming: false }
           : msg
       ));
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const handleStop = () => {
-    stop();
-    setIsLoading(false);
-    setMessages(prev => prev.map(msg => 
-      msg.isStreaming ? { ...msg, isStreaming: false } : msg
-    ));
-  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
@@ -130,7 +122,6 @@ await start(`http://localhost:5003/api/chat/stream`, {
       <ChatInput
         onSend={handleSend}
         isLoading={isLoading}
-        onStop={handleStop}
       />
     </div>
   );

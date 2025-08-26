@@ -1,89 +1,57 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Send, Mic } from "lucide-react";
-import EnergyDocComposer from "../components/EnergyDocComposer";
+import { ChevronLeft, Send } from "lucide-react";
 import { FileUpload } from "../components/FileUpload";
-import { runMainScript } from "../services/api";
+import { runMainScript, sendChatMessage } from "../services/api";
 import "../styles/energyDocPage.css";
+import "../styles/chat.css";
 
 function EnergyDocPage() {
   const navigate = useNavigate();
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Hello! I'm your Energy Document Assistant. How can I help you identify areas of high energy potential today?" },
   ]);
-  const [input, setInput] = useState("");
-  const [isListening, setIsListening] = useState(false);
-  const textareaRef = useRef(null);
+  const [inputText, setInputText] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef(null);
-  const recognitionRef = useRef(null);
-
-  // Auto-resize textarea
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "0px";
-      const scrollHeight = textareaRef.current.scrollHeight;
-      textareaRef.current.style.height = Math.min(scrollHeight, 144) + "px";
-    }
-  }, [input]);
 
   // Scroll to bottom when new message arrives
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Initialize speech recognition
-  useEffect(() => {
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'en-US';
-
-      recognitionRef.current.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        setInput(prev => prev + transcript);
-      };
-
-      recognitionRef.current.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
-        setIsListening(false);
-      };
-
-      recognitionRef.current.onend = () => {
-        setIsListening(false);
-      };
-    }
-  }, []);
-
-  const handleVoiceInput = () => {
-    if (!recognitionRef.current) {
-      alert('Speech recognition is not supported in your browser.');
-      return;
-    }
-
-    if (isListening) {
-      recognitionRef.current.stop();
-      setIsListening(false);
-    } else {
-      recognitionRef.current.start();
-      setIsListening(true);
-    }
-  };
-
-  const handleSend = () => {
-    if (!input.trim()) return;
-    const newMessage = { role: "user", content: input.trim() };
+  const handleSend = async () => {
+    if (!inputText.trim()) return;
+    setIsLoading(true);
+    const newMessage = { role: "user", content: inputText.trim() };
     setMessages([...messages, newMessage]);
-    setInput("");
+    setInputText("");
 
-    // Simulate assistant response
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "Analyzing energy potential... Let me process your request and identify high-energy zones." },
-      ]);
-    }, 1000);
+    try {
+      console.log("Sending message to backend:", inputText.trim());
+      // Send message to the Agent
+      const response = await sendChatMessage(inputText.trim());
+      console.log("Backend response received:", response);
+      
+      const assistantMessage = {
+        role: "assistant",
+        content: response.ai_response || "I couldn't generate a response. Please try again.",
+        timestamp: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      console.error("Error details:", error.message, error.stack);
+      
+      const errorMessage = {
+        role: "assistant",
+        content: `Error: ${error.message || "Failed to get response from Agent. Please check if the backend server is running."}`,
+        timestamp: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const goBackHome = () => {
@@ -124,6 +92,13 @@ function EnergyDocPage() {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
   return (
     <div className="energy-doc-page">
       <header className="energy-doc-header">
@@ -157,20 +132,6 @@ function EnergyDocPage() {
           {/* Input composer */}
           <div className="chat-input-container">
             <div className="chat-input-wrapper">
-              <textarea
-                ref={textareaRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSend();
-                  }
-                }}
-                placeholder="Ask about energy potential..."
-                className="chat-textarea"
-                rows={1}
-              />
               <button
                 onClick={handleStartMain}
                 className="action-btn secondary"
@@ -178,26 +139,27 @@ function EnergyDocPage() {
               >
                 🤖
               </button>
+              <input
+                type="text"
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask about energy potential..."
+                className="chat-input"
+                disabled={isLoading}
+              />
               <button
                 onClick={handleSend}
-                disabled={!input.trim()}
+                disabled={!inputText.trim() || isLoading}
                 className="action-btn primary"
               >
                 <Send className="w-5 h-5" />
-              </button>
-              <button
-                onClick={handleVoiceInput}
-                className={`action-btn secondary ${isListening ? 'listening' : ''}`}
-                title={isListening ? "Stop voice input" : "Start voice input"}
-              >
-                <Mic className={`w-5 h-5 ${isListening ? 'text-red-500' : ''}`} />
               </button>
             </div>
           </div>
         </div>
 
         <div className="tools-section">
-          <EnergyDocComposer />
           <div className="file-upload-section">
             <FileUpload onImageUpload={() => {}} />
           </div>

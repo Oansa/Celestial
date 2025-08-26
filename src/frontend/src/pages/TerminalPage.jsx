@@ -1,25 +1,27 @@
-import React from 'react';
-import MainPyTerminal from '../components/MainPyTerminal';
+import React, { useEffect } from 'react';
+import { io } from 'socket.io-client';
 
 const TerminalPage = () => {
+  useEffect(() => {
+    const socket = io('http://localhost:5003'); // Connect to the backend WebSocket
+
+    socket.on('connect', () => {
+      console.log('Connected to the terminal WebSocket');
+    });
+
+    socket.on('terminal_response', (data) => {
+      console.log('Terminal response:', data.message);
+    });
+
+    return () => {
+      socket.disconnect(); // Clean up on component unmount
+    };
+  }, []);
+
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1>Main.py Terminal Output</h1>
-      <p>Real-time terminal output from your main.py execution</p>
-      
-      <div style={{ marginTop: '20px' }}>
-        <MainPyTerminal />
-      </div>
-      
-      <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
-        <h3>Usage Instructions:</h3>
-        <ul>
-          <li>Start the backend terminal server: <code>python backend_main_terminal.py</code></li>
-          <li>Click "Start main.py" to begin execution and see real-time output</li>
-          <li>Watch the terminal output stream in real-time</li>
-          <li>Use "Stop main.py" to terminate the process</li>
-        </ul>
-      </div>
+    <div>
+      <h1>Terminal Interface</h1>
+      <p>This is where the terminal interface will be displayed.</p>
     </div>
   );
 };

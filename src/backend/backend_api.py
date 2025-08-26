@@ -11,6 +11,7 @@ from detect import detect_objects
 from llm.prompt import explain_scene
 from speak import speak_response
 import tempfile
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -21,11 +22,16 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 @app.route('/chat', methods=['POST'])
 def chat():
     """Main chatbot endpoint supporting both text and voice input"""
+    print(f"[DEBUG] Chat endpoint called at {datetime.now()}")
     try:
         data = request.json
+        print(f"[DEBUG] Request data: {data}")
+        
         message = data.get('message', '')
         image_data = data.get('image')
         use_voice = data.get('use_voice', False)
+        
+        print(f"[DEBUG] Message: '{message}', Use voice: {use_voice}, Has image: {bool(image_data)}")
         
         response_data = {
             'user_message': message,
@@ -38,40 +44,72 @@ def chat():
         # Handle voice input if requested
         if use_voice and not message:
             print("[INFO] Listening for voice input...")
-            message = listen_to_user()
-            response_data['transcription'] = message
+            try:
+                message = listen_to_user()
+                response_data['transcription'] = message
+                print(f"[DEBUG] Voice transcription: {message}")
+            except Exception as e:
+                print(f"[ERROR] Voice input failed: {str(e)}")
+                response_data['transcription'] = f"Voice input failed: {str(e)}"
         
         # Process image if provided
         image_path = None
         if image_data:
-            # Decode base64 image
-            image_data = image_data.split(',')[1]  # Remove data:image/jpeg;base64,
-            image_bytes = base64.b64decode(image_data)
-            
-            # Save to temporary file
-            with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False, dir=UPLOAD_FOLDER) as tmp_file:
-                tmp_file.write(image_bytes)
-                image_path = tmp_file.name
-            
-            # Detect objects
-            detections = detect_objects(image_path)
-            response_data['detections'] = detections
-            
-            # Generate AI response
-            ai_response = explain_scene(message, detections)
-            response_data['ai_response'] = ai_response
-            
-            # Generate audio response
             try:
-                speak_response(ai_response)
-                response_data['audio_response'] = "Audio response generated"
+                # Decode base64 image
+                image_data = image_data.split(',')[1]  # Remove data:image/jpeg;base64,
+                image_bytes = base64.b64decode(image_data)
+                
+                # Save to temporary file
+                with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False, dir=UPLOAD_FOLDER) as tmp_file:
+                    tmp_file.write(image_bytes)
+                    image_path = tmp_file.name
+                
+                print(f"[DEBUG] Image saved to: {image_path}")
+                
+                # Detect objects
+                detections = detect_objects(image_path)
+                response_data['detections'] = detections
+                print(f"[DEBUG] Object detections: {detections}")
+                
+                # Generate AI response
+                ai_response = explain_scene(message, detections)
+                response_data['ai_response'] = ai_response or "I'm sorry, I couldn't generate a response."
+                print(f"[DEBUG] AI response: {ai_response}")
+                
+                # Generate audio response
+                try:
+                    speak_response(ai_response)
+                    response_data['audio_response'] = "Audio response generated"
+                    print("[DEBUG] Audio response generated successfully")
+                except Exception as e:
+                    response_data['audio_response'] = f"Audio generation failed: {str(e)}"
+                    print(f"[ERROR] Audio generation failed: {str(e)}")
+                    
             except Exception as e:
-                response_data['audio_response'] = f"Audio generation failed: {str(e)}"
+                print(f"[ERROR] Image processing failed: {str(e)}")
+                response_data['ai_response'] = f"Image processing error: {str(e)}"
+        else:
+            # Handle text-only input
+            print("[DEBUG] Processing text-only input")
+            try:
+                # For text-only input, we need to call explain_scene with empty detections
+                ai_response = explain_scene(message, [])
+                response_data['ai_response'] = ai_response or "I'm sorry, I couldn't generate a response."
+                print(f"[DEBUG] Text-only AI response: {ai_response}")
+            except Exception as e:
+                print(f"[ERROR] Text processing failed: {str(e)}")
+                response_data['ai_response'] = f"Text processing error: {str(e)}"
         
+        print(f"[DEBUG] Final response data: {response_data}")
         return jsonify(response_data)
         
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        error_msg = f"Unexpected error: {str(e)}"
+        print(f"[ERROR] {error_msg}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': error_msg}), 500
 
 @app.route('/voice-input', methods=['POST'])
 def voice_input():
@@ -119,7 +157,12 @@ def analyze():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/run-main', methods=['POST'])
+@app.route('/terminal', methods=['GET'])
+def terminal():
+    """Endpoint for the terminal interface"""
+    return jsonify({'message': 'Terminal interface is ready.'})
+
+@app.route('/run-main', methods=['POST']) 
 def run_main():
     """Endpoint to run main.py script"""
     try:

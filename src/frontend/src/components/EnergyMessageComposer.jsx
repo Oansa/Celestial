@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Mic, Send, Square } from 'lucide-react';
+import '../styles/chat.css';
 
 export const AssistantMessage = ({ message, onPlayTTS, onStopTTS }) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -94,13 +95,13 @@ const EnergyMessageComposer = ({
               Transcript: {transcript}
             </div>
           )}
-          <div className="flex items-center bg-white border border-gray-300 rounded-full p-1">
+            <div className="flex items-center">
             <input
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder={isRecording ? "Listening..." : "Ask anything..."}
-              className="flex-1 bg-transparent border-none text-gray-900 placeholder-gray-500 focus:outline-none px-4 py-2"
+              className="chat-input"
               disabled={isRecording || isSending}
             />
             <button

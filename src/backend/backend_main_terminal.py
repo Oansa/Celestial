@@ -27,7 +27,7 @@ class MainPyTerminalSession:
         try:
             working_dir = os.getcwd()
             self.process = subprocess.Popen(
-                [sys.executable, 'main.py'],
+                [sys.executable, os.path.join(os.getcwd(), 'src', 'backend', 'main.py')],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 stdin=subprocess.PIPE,
@@ -82,6 +82,11 @@ class MainPyTerminalSession:
             'pid': self.process.pid if self.process else None
         }
 
+@socketio.on('terminal')
+def handle_terminal():
+    """Handle terminal interactions"""
+    emit('terminal_response', {'message': 'Terminal interface is ready.'})
+
 @app.route('/')
 def home():
     return jsonify({
@@ -103,9 +108,11 @@ def get_main_py_status():
 
 @socketio.on('connect')
 def handle_connect():
+    print(f"Client connected: {request.sid}")  # Add logging for connection
     session_id = request.sid
     active_sessions[session_id] = MainPyTerminalSession(session_id)
     emit('connected', {'session_id': session_id})
+    print(f"Active sessions: {len(active_sessions)}")  # Log active sessions
 
 @socketio.on('disconnect')
 def handle_disconnect():
