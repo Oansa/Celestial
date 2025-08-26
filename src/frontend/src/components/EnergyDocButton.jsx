@@ -8,7 +8,7 @@ export default function EnergyDocButton({ onClick }) {
       onClick={onClick}
       className="energy-doc-button"
     >
-      Energy Doc
+      Chat with Helios
     </button>
   );
 }

@@ -9,7 +9,7 @@ import "../styles/chat.css";
 function EnergyDocPage() {
   const navigate = useNavigate();
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Hello! I'm your Energy Document Assistant. How can I help you identify areas of high energy potential today?" },
+    { role: "assistant", content: "Hello! I'm Helios. How can I help you today?" },
   ]);
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -102,7 +102,7 @@ function EnergyDocPage() {
         console.log("Output:", result.stdout);
         
         // Extract and display the actual speech output
-        const speechOutput = result.stdout || "Mars AI Assistant started successfully!";
+        const speechOutput = result.stdout || "Helios started successfully!";
         const cleanOutput = speechOutput.trim();
         
         setMessages(prev => [...prev, { 
@@ -111,7 +111,7 @@ function EnergyDocPage() {
         }]);
       } else {
         console.error("[ERROR] main.py execution failed:", result.stderr);
-        const errorMessage = result.stderr || "Failed to start Mars AI Assistant";
+        const errorMessage = result.stderr || "Failed to start Helios";
         setMessages(prev => [...prev, { 
           role: "assistant", 
           content: `❌ ${errorMessage}` 
@@ -121,7 +121,7 @@ function EnergyDocPage() {
       console.error("[ERROR] Failed to start main.py:", error);
       setMessages(prev => [...prev, { 
         role: "assistant", 
-        content: `⚠️ Error starting Mars AI Assistant: ${error.message}` 
+        content: `⚠️ Error starting Helios: ${error.message}` 
       }]);
     }
   };
@@ -143,7 +143,7 @@ function EnergyDocPage() {
           <ChevronLeft className="w-5 h-5 mr-1" />
           Back
         </button>
-        <h1 className="energy-doc-title">Energy Document Assistant</h1>
+        <h1 className="energy-doc-title">Helios</h1>
       </header>
 
       <main className="energy-doc-content">
@@ -178,7 +178,7 @@ function EnergyDocPage() {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask about energy potential..."
+                placeholder="Ask anything about green energy..."
                 className="chat-input"
                 disabled={isLoading}
               />

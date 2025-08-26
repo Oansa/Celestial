@@ -136,7 +136,7 @@ function WelcomePage() {
             textAlign: 'center',
             maxWidth: '400px'
           }}>
-            This is Energy Doc — a highly equipped AI scout, designed to identify zones rich in energy and potential resources.
+            This is Helios — a highly equipped AI scout, designed to identify zones rich in high green sustainable energy potential.
           </p>
         </div>
         <EnergyDocButton onClick={handleEnergyDocClick} />
