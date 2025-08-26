@@ -30,11 +30,22 @@ export const FileUpload = ({ onChange, onImageUpload }) => {
   const fileInputRef = useRef(null);
 
   const handleFileChange = (newFiles) => {
-    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-    onChange && onChange(newFiles);
+    if (newFiles.length === 0) {
+      console.warn("No files selected.");
+      return;
+    }
+
+    const validFiles = newFiles.filter(file => file instanceof File || file instanceof Blob);
+    if (validFiles.length === 0) {
+      console.warn("Invalid file type. Please upload a valid image.");
+      return;
+    }
+
+    setFiles((prevFiles) => [...prevFiles, ...validFiles]);
+    onChange && onChange(validFiles);
     
-    if (newFiles.length > 0 && onImageUpload) {
-      onImageUpload(URL.createObjectURL(newFiles[0]));
+    if (validFiles.length > 0 && onImageUpload) {
+      onImageUpload(validFiles[0]);
     }
   };
 

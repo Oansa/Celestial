@@ -13,12 +13,41 @@ function EnergyDocPage() {
   ]);
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState(null);
   const chatEndRef = useRef(null);
 
   // Scroll to bottom when new message arrives
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Function to convert file to base64 with validation
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      // Validate that the input is a File or Blob object
+      if (!(file instanceof File || file instanceof Blob)) {
+        console.warn("Invalid file type. Expected File or Blob object.");
+        reject(new Error("Invalid file type. Expected File or Blob object."));
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  };
+
+  // Handle image upload from FileUpload component
+  const handleImageUpload = async (file) => {
+    try {
+      const base64Data = await fileToBase64(file);
+      setUploadedImage(base64Data);
+      console.log("Image uploaded and converted to base64");
+    } catch (error) {
+      console.error("Failed to convert image to base64:", error);
+    }
+  };
 
   const handleSend = async () => {
     if (!inputText.trim()) return;
@@ -29,8 +58,10 @@ function EnergyDocPage() {
 
     try {
       console.log("Sending message to backend:", inputText.trim());
-      // Send message to the Agent
-      const response = await sendChatMessage(inputText.trim());
+      console.log("Uploaded image:", uploadedImage ? "Yes" : "No");
+      
+      // Send message to the Agent with image data if available
+      const response = await sendChatMessage(inputText.trim(), uploadedImage);
       console.log("Backend response received:", response);
       
       const assistantMessage = {
@@ -39,6 +70,9 @@ function EnergyDocPage() {
         timestamp: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, assistantMessage]);
+      
+      // Clear the uploaded image after sending
+      setUploadedImage(null);
     } catch (error) {
       console.error("Failed to send message:", error);
       console.error("Error details:", error.message, error.stack);
@@ -161,7 +195,7 @@ function EnergyDocPage() {
 
         <div className="tools-section">
           <div className="file-upload-section">
-            <FileUpload onImageUpload={() => {}} />
+            <FileUpload onImageUpload={handleImageUpload} />
           </div>
         </div>
       </main>
