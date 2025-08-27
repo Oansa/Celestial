@@ -91,6 +91,17 @@ run dfx deploy
 Frontend Hosting
 Data storage
 
+## Here is our live frontend link:
+```bash
+https://t7ozk-kyaaa-aaaan-qz6cq-cai.icp0.io/
+```
+
+## Here is our  Backend canister via Candid interface:
+```bash
+    UserAuth: https://a4gq6-oaaaa-aaaab-qaa4q-cai.raw.icp0.io/?id=twnsw-4qaaa-aaaan-qz6da-cai
+    internet_identity: https://a4gq6-oaaaa-aaaab-qaa4q-cai.raw.icp0.io/?id=rdmx6-jaaaa-aaaaa-aaadq-cai
+    ```
+    
 ### Usage
 ```bash
 upload an image for analysis and give a prompt for the AI to give back relevant output. 
