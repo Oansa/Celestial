@@ -126,5 +126,14 @@ https://mega.nz/file/StRBjYwT#Gfo7P9qrWPvc-ilbatNoGEPVy5xgL700RGre6pU350s
 ## Contributing
 We welcome contributions from the space exploration and renewable energy communities.
 
+##Disclaimer
+The yolo model currntly in use is trained on common objects, things such as people, cars, trees.
+
+The AI tool might hallucinate in events where not a clear object is identified in the image under analysis or if it doesn't "see" anything at all.
+
+Despite this, the AI will give a good reponse in relation to the object identified, i.e; How the object "seen" will influence green energy set up on Earth and Mars.
+
+The team is working on a custom data set to train a more appropriate yolo model for the AI tool, Helios.
+
 ---
 **Celestial: Powering the future of space-based renewable energy**
