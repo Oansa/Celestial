@@ -118,16 +118,20 @@ you can also interact with the AI via speech just click the button to the left o
 https://celestial-energy-5qhwsvj.gamma.site/
 
 ## Here is our pitch video
+See what we at Celestial AI stand for and believe here;
+
 https://x.com/CelestialA20735/status/1960236594486522207
 
 ## Here is our demo video
+To find out how yo use the model, check out our detailed demo video;
+
 https://mega.nz/file/StRBjYwT#Gfo7P9qrWPvc-ilbatNoGEPVy5xgL700RGre6pU350s
 
 ## Contributing
 We welcome contributions from the space exploration and renewable energy communities.
 
 ## Disclaimer
-The yolo model currntly in use is trained on common objects, things such as people, cars, trees.
+The yolo model currently in use is trained on common objects, things such as people, cars, trees.
 
 The AI tool might hallucinate in events where not a clear object is identified in the image under analysis or if it doesn't "see" anything at all.
 
