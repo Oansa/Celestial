@@ -126,7 +126,7 @@ https://mega.nz/file/StRBjYwT#Gfo7P9qrWPvc-ilbatNoGEPVy5xgL700RGre6pU350s
 ## Contributing
 We welcome contributions from the space exploration and renewable energy communities.
 
-##Disclaimer
+## Disclaimer
 The yolo model currntly in use is trained on common objects, things such as people, cars, trees.
 
 The AI tool might hallucinate in events where not a clear object is identified in the image under analysis or if it doesn't "see" anything at all.
