@@ -69,7 +69,8 @@ Celestial is designed to support the establishment of renewable energy infrastru
 - Python 3.8+
 - pip
 - Git
-- Satellite data access credentials (optional)
+- Satellite data for analysis i.e; satellite imagery
+- Ollama with mistral and llama2 pulled.
 
 ### Installation
 ```bash
@@ -88,8 +89,8 @@ open another terminal
 run dfx deploy
 ```
 ## We are using ICP for:
-Frontend Hosting
-Data storage
+- Frontend Hosting
+- Data storage
 
 ## Here is our live frontend link:
 ```bash
