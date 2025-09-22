@@ -8,8 +8,11 @@ import Principal "mo:base/Principal";
 import AccessControl "authorization/access-control";
 import OutCall "http-outcalls/outcall";
 import Array "mo:base/Array";
+import Nat "mo:base/Nat";
+import Stripe "stripe/stripe";
+import Int "mo:base/Int";
 
-persistent actor {
+actor {
   transient let textMap = OrderedMap.Make<Text>(Text.compare);
   transient let principalMap = OrderedMap.Make<Principal>(Principal.compare);
 
@@ -28,6 +31,34 @@ persistent actor {
     #awarenessEvent;
   };
 
+  public type TreePlantingData = {
+    numberOfTrees : Nat;
+    treeSpecies : Text;
+    areaSize : Float;
+    areaUnit : Text;
+  };
+
+  public type CleanupData = {
+    wasteType : Text;
+    amount : Float;
+    amountUnit : Text;
+    areaCleaned : Text;
+  };
+
+  public type RenewableEnergyData = {
+    installationType : Text;
+    energyCapacity : Float;
+    capacityUnit : Text;
+    installationDetails : Text;
+  };
+
+  public type CategoryData = {
+    #treePlanting : TreePlantingData;
+    #cleanup : CleanupData;
+    #renewableEnergy : RenewableEnergyData;
+    #awarenessEvent;
+  };
+
   public type ClimateAction = {
     id : Text;
     photoPath : Text;
@@ -35,15 +66,18 @@ persistent actor {
     temperature : Float;
     weatherNotes : Text;
     description : Text;
-    categories : [Category];
+    category : Category;
+    categoryData : CategoryData;
     timestamp : Int;
     userDisplayName : Text;
+    walletAddress : ?Text;
   };
 
   public type UserProfile = {
     displayName : Text;
     bio : Text;
     profilePhotoPath : ?Text;
+    isPremium : Bool;
   };
 
   public type ChatMessage = {
@@ -85,11 +119,79 @@ persistent actor {
     relatedActionId : ?Text;
   };
 
+  public type ActiveUser = {
+    principal : Principal;
+    displayName : Text;
+    profilePhotoPath : ?Text;
+    bio : Text;
+    lastActive : Int;
+    isPremium : Bool;
+  };
+
+  public type VoteType = {
+    #upvote;
+    #downvote;
+  };
+
+  public type WeatherReportVote = {
+    reportId : Text;
+    user : Principal;
+    voteType : VoteType;
+    timestamp : Int;
+  };
+
+  public type WeatherReportVotes = {
+    upvotes : Nat;
+    downvotes : Nat;
+    userVotes : [WeatherReportVote];
+  };
+
+  public type DonationMethod = {
+    #stripe;
+    #crypto;
+  };
+
+  public type CryptoWallet = {
+    currency : Text;
+    address : Text;
+    qrCodeUrl : Text;
+  };
+
+  public type Donation = {
+    id : Text;
+    amount : Float;
+    currency : Text;
+    method : DonationMethod;
+    timestamp : Int;
+    submissionId : Text;
+    donor : ?Principal;
+    transactionId : Text;
+  };
+
+  public type DonationConfig = {
+    stripeApiKey : Text;
+    cryptoWallets : [CryptoWallet];
+  };
+
+  public type Comment = {
+    id : Text;
+    submissionId : Text;
+    author : Text;
+    content : Text;
+    timestamp : Int;
+  };
+
   var climateActions : OrderedMap.Map<Text, ClimateAction> = textMap.empty<ClimateAction>();
   var userProfiles : OrderedMap.Map<Principal, UserProfile> = principalMap.empty<UserProfile>();
   var chatHistory : OrderedMap.Map<Text, ChatMessage> = textMap.empty<ChatMessage>();
   var notificationPreferences : OrderedMap.Map<Principal, NotificationPreference> = principalMap.empty<NotificationPreference>();
   var notifications : OrderedMap.Map<Principal, [Notification]> = principalMap.empty<[Notification]>();
+  var activeUsers : OrderedMap.Map<Principal, ActiveUser> = principalMap.empty<ActiveUser>();
+  var weatherReportVotes : OrderedMap.Map<Text, WeatherReportVotes> = textMap.empty<WeatherReportVotes>();
+  var donations : OrderedMap.Map<Text, Donation> = textMap.empty<Donation>();
+  var donationConfig : ?DonationConfig = null;
+  var stripeConfig : ?Stripe.StripeConfiguration = null;
+  var comments : OrderedMap.Map<Text, Comment> = textMap.empty<Comment>();
   let registry = Registry.new();
   let accessControlState = AccessControl.initState();
 
@@ -150,7 +252,9 @@ persistent actor {
     temperature : Float,
     weatherNotes : Text,
     description : Text,
-    categories : [Category],
+    category : Category,
+    categoryData : CategoryData,
+    walletAddress : ?Text,
   ) : async () {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Debug.trap("Unauthorized: Only users can upload climate actions");
@@ -159,9 +263,19 @@ persistent actor {
       Debug.trap("Required fields must not be empty");
     };
 
-    let userDisplayName = switch (principalMap.get(userProfiles, caller)) {
+    let userProfile = principalMap.get(userProfiles, caller);
+    let userDisplayName = switch (userProfile) {
       case (?profile) profile.displayName;
       case null "Anonymous";
+    };
+
+    let isPremium = switch (userProfile) {
+      case (?profile) profile.isPremium;
+      case null false;
+    };
+
+    if (walletAddress != null and not isPremium) {
+      Debug.trap("Only premium users can request funding with a wallet address");
     };
 
     let climateAction : ClimateAction = {
@@ -171,9 +285,11 @@ persistent actor {
       temperature;
       weatherNotes;
       description;
-      categories;
+      category;
+      categoryData;
       timestamp = Time.now();
       userDisplayName;
+      walletAddress;
     };
 
     climateActions := textMap.put(climateActions, id, climateAction);
@@ -322,4 +438,331 @@ persistent actor {
     };
     notifications := principalMap.put(notifications, caller, []);
   };
+
+  public shared ({ caller }) func updateActiveUser() : async () {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Debug.trap("Unauthorized: Only users can update active status");
+    };
+
+    let userProfile = principalMap.get(userProfiles, caller);
+    let profile = switch (userProfile) {
+      case null {
+        {
+          displayName = "Anonymous";
+          bio = "";
+          profilePhotoPath = null;
+          isPremium = false;
+        };
+      };
+      case (?p) p;
+    };
+
+    let activeUser : ActiveUser = {
+      principal = caller;
+      displayName = profile.displayName;
+      profilePhotoPath = profile.profilePhotoPath;
+      bio = profile.bio;
+      lastActive = Time.now();
+      isPremium = profile.isPremium;
+    };
+
+    activeUsers := principalMap.put(activeUsers, caller, activeUser);
+  };
+
+  public query ({ caller }) func getActiveUsers() : async [ActiveUser] {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Debug.trap("Unauthorized: Only users can get active users");
+    };
+    Iter.toArray(principalMap.vals(activeUsers));
+  };
+
+  public shared ({ caller }) func voteWeatherReport(reportId : Text, voteType : VoteType) : async () {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Debug.trap("Unauthorized: Only users can vote on weather reports");
+    };
+
+    let currentVotes = switch (textMap.get(weatherReportVotes, reportId)) {
+      case (?votes) votes;
+      case null {
+        let emptyVotes : WeatherReportVotes = {
+          upvotes = 0;
+          downvotes = 0;
+          userVotes = [];
+        };
+        emptyVotes;
+      };
+    };
+
+    let existingVote = Array.find<WeatherReportVote>(
+      currentVotes.userVotes,
+      func(vote : WeatherReportVote) : Bool {
+        vote.user == caller;
+      },
+    );
+
+    switch (existingVote) {
+      case (?vote) {
+        if (vote.voteType == voteType) {
+          Debug.trap("User has already voted with the same vote type");
+        } else {
+          let updatedUserVotes = Array.map<WeatherReportVote, WeatherReportVote>(
+            currentVotes.userVotes,
+            func(v : WeatherReportVote) : WeatherReportVote {
+              if (v.user == caller) {
+                { v with voteType };
+              } else {
+                v;
+              };
+            },
+          );
+
+          let (newUpvotes, newDownvotes) = switch (voteType) {
+            case (#upvote) (currentVotes.upvotes + 1, if (currentVotes.downvotes > 0) { currentVotes.downvotes - 1 : Nat } else { 0 });
+            case (#downvote) (if (currentVotes.upvotes > 0) { currentVotes.upvotes - 1 : Nat } else { 0 }, currentVotes.downvotes + 1);
+          };
+
+          let updatedVotes : WeatherReportVotes = {
+            currentVotes with
+            upvotes = newUpvotes;
+            downvotes = newDownvotes;
+            userVotes = updatedUserVotes;
+          };
+
+          weatherReportVotes := textMap.put(weatherReportVotes, reportId, updatedVotes);
+        };
+      };
+      case null {
+        let newVote : WeatherReportVote = {
+          reportId;
+          user = caller;
+          voteType;
+          timestamp = Time.now();
+        };
+
+        let updatedUserVotes = Array.append(currentVotes.userVotes, [newVote]);
+        let (newUpvotes, newDownvotes) = switch (voteType) {
+          case (#upvote) (currentVotes.upvotes + 1, currentVotes.downvotes);
+          case (#downvote) (currentVotes.upvotes, currentVotes.downvotes + 1);
+        };
+
+        let updatedVotes : WeatherReportVotes = {
+          currentVotes with
+          upvotes = newUpvotes;
+          downvotes = newDownvotes;
+          userVotes = updatedUserVotes;
+        };
+
+        weatherReportVotes := textMap.put(weatherReportVotes, reportId, updatedVotes);
+      };
+    };
+  };
+
+  public query func getWeatherReportVotes(reportId : Text) : async WeatherReportVotes {
+    switch (textMap.get(weatherReportVotes, reportId)) {
+      case (?votes) votes;
+      case null {
+        {
+          upvotes = 0;
+          downvotes = 0;
+          userVotes = [];
+        };
+      };
+    };
+  };
+
+  public query ({ caller }) func getUserVoteStatus(reportId : Text) : async ?VoteType {
+    switch (textMap.get(weatherReportVotes, reportId)) {
+      case (?votes) {
+        let userVote = Array.find<WeatherReportVote>(
+          votes.userVotes,
+          func(vote : WeatherReportVote) : Bool {
+            vote.user == caller;
+          },
+        );
+        switch (userVote) {
+          case (?vote) ?vote.voteType;
+          case null null;
+        };
+      };
+      case null null;
+    };
+  };
+
+  public shared ({ caller }) func makeDonation(
+    amount : Float,
+    currency : Text,
+    method : DonationMethod,
+    submissionId : Text,
+    transactionId : Text,
+  ) : async () {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Debug.trap("Unauthorized: Only users can make donations");
+    };
+    if (amount <= 0 or currency == "" or submissionId == "" or transactionId == "") {
+      Debug.trap("Invalid donation parameters");
+    };
+
+    let donation : Donation = {
+      id = transactionId;
+      amount;
+      currency;
+      method;
+      timestamp = Time.now();
+      submissionId;
+      donor = ?caller;
+      transactionId;
+    };
+
+    donations := textMap.put(donations, transactionId, donation);
+  };
+
+  public query func getDonationsBySubmission(submissionId : Text) : async [Donation] {
+    let filteredDonations = Iter.filter<Donation>(
+      textMap.vals(donations),
+      func(donation : Donation) : Bool {
+        donation.submissionId == submissionId;
+      },
+    );
+    Iter.toArray(filteredDonations);
+  };
+
+  public query func getAllDonations() : async [Donation] {
+    Iter.toArray(textMap.vals(donations));
+  };
+
+  public shared ({ caller }) func setDonationConfig(config : DonationConfig) : async () {
+    if (not AccessControl.hasPermission(accessControlState, caller, #admin)) {
+      Debug.trap("Unauthorized: Only admins can set donation config");
+    };
+    donationConfig := ?config;
+  };
+
+  public query func getDonationConfig() : async ?DonationConfig {
+    donationConfig;
+  };
+
+  public query func getCryptoWallets() : async [CryptoWallet] {
+    switch (donationConfig) {
+      case (?config) config.cryptoWallets;
+      case null [];
+    };
+  };
+
+  public query func isStripeConfigured() : async Bool {
+    stripeConfig != null;
+  };
+
+  public shared ({ caller }) func setStripeConfiguration(config : Stripe.StripeConfiguration) : async () {
+    if (not AccessControl.hasPermission(accessControlState, caller, #admin)) {
+      Debug.trap("Unauthorized: Only admins can set Stripe configuration");
+    };
+    stripeConfig := ?config;
+  };
+
+  func getStripeConfiguration() : Stripe.StripeConfiguration {
+    switch (stripeConfig) {
+      case null Debug.trap("Stripe needs to be first configured");
+      case (?value) value;
+    };
+  };
+
+  public func getStripeSessionStatus(sessionId : Text) : async Stripe.StripeSessionStatus {
+    await Stripe.getSessionStatus(getStripeConfiguration(), sessionId, transform);
+  };
+
+  public shared ({ caller }) func createCheckoutSession(items : [Stripe.ShoppingItem], successUrl : Text, cancelUrl : Text) : async Text {
+    await Stripe.createCheckoutSession(getStripeConfiguration(), caller, items, successUrl, cancelUrl, transform);
+  };
+
+  public shared ({ caller }) func addComment(submissionId : Text, content : Text) : async () {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Debug.trap("Unauthorized: Only users can add comments");
+    };
+    if (content == "") {
+      Debug.trap("Comment content must not be empty");
+    };
+
+    let author = switch (principalMap.get(userProfiles, caller)) {
+      case (?profile) profile.displayName;
+      case null "Anonymous";
+    };
+
+    let comment : Comment = {
+      id = submissionId # "_" # Nat.toText(Int.abs(Time.now()));
+      submissionId;
+      author;
+      content;
+      timestamp = Time.now();
+    };
+
+    comments := textMap.put(comments, comment.id, comment);
+  };
+
+  public query func getCommentsBySubmission(submissionId : Text) : async [Comment] {
+    let filteredComments = Iter.filter<Comment>(
+      textMap.vals(comments),
+      func(comment : Comment) : Bool {
+        comment.submissionId == submissionId;
+      },
+    );
+    Iter.toArray(filteredComments);
+  };
+
+  public query func getAllComments() : async [Comment] {
+    Iter.toArray(textMap.vals(comments));
+  };
+
+  public shared ({ caller }) func setUserPremiumStatus(user : Principal, isPremium : Bool) : async () {
+    if (not AccessControl.hasPermission(accessControlState, caller, #admin)) {
+      Debug.trap("Unauthorized: Only admins can set user premium status");
+    };
+
+    switch (principalMap.get(userProfiles, user)) {
+      case (?profile) {
+        let updatedProfile = { profile with isPremium };
+        userProfiles := principalMap.put(userProfiles, user, updatedProfile);
+      };
+      case null Debug.trap("User profile not found");
+    };
+  };
+
+  public query ({ caller }) func getCallerPremiumStatus() : async Bool {
+    switch (principalMap.get(userProfiles, caller)) {
+      case (?profile) profile.isPremium;
+      case null false;
+    };
+  };
+
+  public shared ({ caller }) func toggleUserPremiumStatus(user : Principal) : async Bool {
+    if (not AccessControl.hasPermission(accessControlState, caller, #admin)) {
+      Debug.trap("Unauthorized: Only admins can toggle user premium status");
+    };
+
+    switch (principalMap.get(userProfiles, user)) {
+      case (?profile) {
+        let newStatus = not profile.isPremium;
+        let updatedProfile = { profile with isPremium = newStatus };
+        userProfiles := principalMap.put(userProfiles, user, updatedProfile);
+        newStatus;
+      };
+      case null Debug.trap("User profile not found");
+    };
+  };
+
+  // New function to search platform data for chatbot integration
+  public query func searchPlatformData(searchTerm : Text) : async [Text] {
+    let results = Array.map<ClimateAction, Text>(
+      Iter.toArray(textMap.vals(climateActions)),
+      func(action : ClimateAction) : Text {
+        "Location: " # action.coordinates.areaName # ", Category: " # (switch (action.category) {
+          case (#treePlanting) "Tree Planting";
+          case (#cleanup) "Cleanup";
+          case (#renewableEnergy) "Renewable Energy";
+          case (#awarenessEvent) "Awareness Event";
+        }) # ", User: " # action.userDisplayName;
+      },
+    );
+    results;
+  };
 };
+

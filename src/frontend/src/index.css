@@ -1,134 +1,363 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: oklch(98% 0.01 180);
-    --foreground: oklch(15% 0.02 180);
-    --card: oklch(100% 0 0);
-    --card-foreground: oklch(15% 0.02 180);
-    --popover: oklch(100% 0 0);
-    --popover-foreground: oklch(15% 0.02 180);
-    --primary: oklch(55% 0.15 180);
-    --primary-foreground: oklch(98% 0.01 180);
-    --secondary: oklch(95% 0.02 180);
-    --secondary-foreground: oklch(25% 0.02 180);
-    --muted: oklch(95% 0.02 180);
-    --muted-foreground: oklch(45% 0.02 180);
-    --accent: oklch(92% 0.03 180);
-    --accent-foreground: oklch(25% 0.02 180);
-    --destructive: oklch(62% 0.22 25);
-    --destructive-foreground: oklch(98% 0.01 180);
-    --border: oklch(90% 0.02 180);
-    --input: oklch(90% 0.02 180);
-    --ring: oklch(55% 0.15 180);
-    --chart-1: oklch(62% 0.25 12);
-    --chart-2: oklch(72% 0.20 33);
-    --chart-3: oklch(65% 0.18 75);
-    --chart-4: oklch(58% 0.22 120);
-    --chart-5: oklch(55% 0.15 180);
-    --radius: 0.5rem;
-  }
+:root {
+  /* Climate-themed OKLCH color system */
+  /* Forest colors */
+  --forest-50: oklch(0.97 0.02 142);
+  --forest-100: oklch(0.94 0.04 142);
+  --forest-200: oklch(0.87 0.08 142);
+  --forest-300: oklch(0.78 0.12 142);
+  --forest-400: oklch(0.68 0.16 142);
+  --forest-500: oklch(0.58 0.20 142);
+  --forest-600: oklch(0.48 0.24 142);
+  --forest-700: oklch(0.38 0.28 142);
+  --forest-800: oklch(0.28 0.32 142);
+  --forest-900: oklch(0.18 0.36 142);
+  --forest-950: oklch(0.08 0.40 142);
 
-  .dark {
-    --background: oklch(12% 0.02 180);
-    --foreground: oklch(95% 0.01 180);
-    --card: oklch(15% 0.02 180);
-    --card-foreground: oklch(95% 0.01 180);
-    --popover: oklch(15% 0.02 180);
-    --popover-foreground: oklch(95% 0.01 180);
-    --primary: oklch(65% 0.15 180);
-    --primary-foreground: oklch(12% 0.02 180);
-    --secondary: oklch(20% 0.02 180);
-    --secondary-foreground: oklch(85% 0.01 180);
-    --muted: oklch(20% 0.02 180);
-    --muted-foreground: oklch(65% 0.02 180);
-    --accent: oklch(25% 0.03 180);
-    --accent-foreground: oklch(85% 0.01 180);
-    --destructive: oklch(62% 0.22 25);
-    --destructive-foreground: oklch(95% 0.01 180);
-    --border: oklch(25% 0.02 180);
-    --input: oklch(25% 0.02 180);
-    --ring: oklch(65% 0.15 180);
-    --chart-1: oklch(70% 0.25 12);
-    --chart-2: oklch(75% 0.20 33);
-    --chart-3: oklch(68% 0.18 75);
-    --chart-4: oklch(62% 0.22 120);
-    --chart-5: oklch(65% 0.15 180);
-  }
+  /* Ocean colors */
+  --ocean-50: oklch(0.97 0.02 220);
+  --ocean-100: oklch(0.94 0.04 220);
+  --ocean-200: oklch(0.87 0.08 220);
+  --ocean-300: oklch(0.78 0.12 220);
+  --ocean-400: oklch(0.68 0.16 220);
+  --ocean-500: oklch(0.58 0.20 220);
+  --ocean-600: oklch(0.48 0.24 220);
+  --ocean-700: oklch(0.38 0.28 220);
+  --ocean-800: oklch(0.28 0.32 220);
+  --ocean-900: oklch(0.18 0.36 220);
+  --ocean-950: oklch(0.08 0.40 220);
+
+  /* Earth colors */
+  --earth-50: oklch(0.97 0.02 45);
+  --earth-100: oklch(0.94 0.04 45);
+  --earth-200: oklch(0.87 0.08 45);
+  --earth-300: oklch(0.78 0.12 45);
+  --earth-400: oklch(0.68 0.16 45);
+  --earth-500: oklch(0.58 0.20 45);
+  --earth-600: oklch(0.48 0.24 45);
+  --earth-700: oklch(0.38 0.28 45);
+  --earth-800: oklch(0.28 0.32 45);
+  --earth-900: oklch(0.18 0.36 45);
+  --earth-950: oklch(0.08 0.40 45);
+
+  /* Sky colors */
+  --sky-50: oklch(0.97 0.02 200);
+  --sky-100: oklch(0.94 0.04 200);
+  --sky-200: oklch(0.87 0.08 200);
+  --sky-300: oklch(0.78 0.12 200);
+  --sky-400: oklch(0.68 0.16 200);
+  --sky-500: oklch(0.58 0.20 200);
+  --sky-600: oklch(0.48 0.24 200);
+  --sky-700: oklch(0.38 0.28 200);
+  --sky-800: oklch(0.28 0.32 200);
+  --sky-900: oklch(0.18 0.36 200);
+  --sky-950: oklch(0.08 0.40 200);
+
+  /* Base colors */
+  --background: oklch(1.00 0.00 0);
+  --foreground: oklch(0.09 0.00 0);
+  --card: oklch(1.00 0.00 0);
+  --card-foreground: oklch(0.09 0.00 0);
+  --popover: oklch(1.00 0.00 0);
+  --popover-foreground: oklch(0.09 0.00 0);
+  --primary: oklch(0.48 0.24 142);
+  --primary-foreground: oklch(0.98 0.00 0);
+  --secondary: oklch(0.96 0.00 0);
+  --secondary-foreground: oklch(0.45 0.00 0);
+  --muted: oklch(0.96 0.00 0);
+  --muted-foreground: oklch(0.45 0.00 0);
+  --accent: oklch(0.96 0.00 0);
+  --accent-foreground: oklch(0.45 0.00 0);
+  --destructive: oklch(0.62 0.25 29);
+  --destructive-foreground: oklch(0.98 0.00 0);
+  --border: oklch(0.92 0.00 0);
+  --input: oklch(0.92 0.00 0);
+  --ring: oklch(0.48 0.24 142);
+  --radius: 0.5rem;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground font-sans;
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
+.dark {
+  --background: oklch(0.04 0.00 0);
+  --foreground: oklch(0.98 0.00 0);
+  --card: oklch(0.04 0.00 0);
+  --card-foreground: oklch(0.98 0.00 0);
+  --popover: oklch(0.04 0.00 0);
+  --popover-foreground: oklch(0.98 0.00 0);
+  --primary: oklch(0.68 0.16 142);
+  --primary-foreground: oklch(0.09 0.00 0);
+  --secondary: oklch(0.12 0.00 0);
+  --secondary-foreground: oklch(0.98 0.00 0);
+  --muted: oklch(0.12 0.00 0);
+  --muted-foreground: oklch(0.64 0.00 0);
+  --accent: oklch(0.12 0.00 0);
+  --accent-foreground: oklch(0.98 0.00 0);
+  --destructive: oklch(0.62 0.25 29);
+  --destructive-foreground: oklch(0.98 0.00 0);
+  --border: oklch(0.12 0.00 0);
+  --input: oklch(0.12 0.00 0);
+  --ring: oklch(0.68 0.16 142);
 }
 
-/* Custom scrollbar styling */
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
+  background: var(--forest-100);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
+  background: linear-gradient(135deg, var(--forest-400), var(--ocean-400));
   border-radius: 4px;
+  transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
+  background: linear-gradient(135deg, var(--forest-500), var(--ocean-500));
 }
 
-/* Leaflet custom marker styles */
-.custom-climate-marker {
-  background: transparent !important;
-  border: none !important;
+.dark ::-webkit-scrollbar-track {
+  background: var(--forest-900);
 }
 
-/* Leaflet popup customization */
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--forest-600), var(--ocean-600));
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--forest-500), var(--ocean-500));
+}
+
+/* Leaflet map customizations */
+.leaflet-container {
+  background: linear-gradient(135deg, var(--sky-100), var(--ocean-100));
+  font-family: 'Inter', sans-serif;
+}
+
+.dark .leaflet-container {
+  background: linear-gradient(135deg, var(--sky-900), var(--ocean-900));
+}
+
 .leaflet-popup-content-wrapper {
-  background: hsl(var(--background));
-  color: hsl(var(--foreground));
-  border-radius: 8px;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--forest-200);
+}
+
+.dark .leaflet-popup-content-wrapper {
+  background: rgba(0, 0, 0, 0.95);
+  border: 1px solid var(--forest-800);
 }
 
 .leaflet-popup-tip {
-  background: hsl(var(--background));
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--forest-200);
 }
 
-.leaflet-popup-content {
-  margin: 0;
-  line-height: 1.4;
+.dark .leaflet-popup-tip {
+  background: rgba(0, 0, 0, 0.95);
+  border: 1px solid var(--forest-800);
 }
 
-/* Leaflet control customization */
-.leaflet-control-attribution {
-  background: hsl(var(--background) / 0.8) !important;
-  color: hsl(var(--muted-foreground)) !important;
-  font-size: 10px !important;
+.custom-tooltip {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
-.leaflet-control-attribution a {
-  color: hsl(var(--primary)) !important;
+/* Custom animations */
+@keyframes gentle-bounce {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
 }
 
-/* Dark mode adjustments for Leaflet */
-.dark .leaflet-tile {
-  filter: brightness(0.8) contrast(1.2) hue-rotate(180deg) invert(1);
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.6), 0 0 30px rgba(34, 197, 94, 0.4); }
 }
 
-.dark .leaflet-control-attribution {
-  filter: invert(1) hue-rotate(180deg);
+@keyframes ripple {
+  0% { transform: scale(1); opacity: 0.3; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(1deg); }
+  66% { transform: translateY(5px) rotate(-1deg); }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-gentle-bounce {
+  animation: gentle-bounce 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-ripple {
+  animation: ripple 1.5s ease-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.4s ease-out forwards;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out forwards;
+}
+
+/* Custom utility classes */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.hover-scale {
+  transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.card-nature {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--forest-200);
+}
+
+.dark .card-nature {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+  border: 1px solid var(--forest-800);
+}
+
+.btn-nature {
+  background: linear-gradient(135deg, var(--forest-600), var(--ocean-600));
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-nature:hover {
+  background: linear-gradient(135deg, var(--forest-700), var(--ocean-700));
+  transform: translateY(-1px);
+}
+
+.shadow-nature {
+  box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.1), 0 2px 4px -1px rgba(34, 197, 94, 0.06);
+}
+
+.shadow-nature-lg {
+  box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.1), 0 4px 6px -2px rgba(34, 197, 94, 0.05);
+}
+
+.shadow-glow {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), 0 0 40px rgba(34, 197, 94, 0.1);
+}
+
+.bg-nature-pattern {
+  background-image: 
+    radial-gradient(circle at 25% 25%, var(--forest-100) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, var(--ocean-100) 0%, transparent 50%);
+}
+
+.dark .bg-nature-pattern {
+  background-image: 
+    radial-gradient(circle at 25% 25%, var(--forest-900) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, var(--ocean-900) 0%, transparent 50%);
+}
+
+.loading-nature {
+  background: linear-gradient(90deg, var(--forest-100), var(--ocean-100), var(--forest-100));
+  background-size: 200% 100%;
+  animation: loading-shimmer 2s ease-in-out infinite;
+}
+
+.dark .loading-nature {
+  background: linear-gradient(90deg, var(--forest-900), var(--ocean-900), var(--forest-900));
+  background-size: 200% 100%;
+}
+
+@keyframes loading-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

@@ -1,8 +1,8 @@
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from '@/components/ui/sonner';
 import { useInternetIdentity } from './hooks/useInternetIdentity';
-import { useGetCallerUserProfile } from './hooks/useQueries';
-import { useState } from 'react';
+import { useGetCallerUserProfile, useUpdateActiveUser } from './hooks/useQueries';
+import { useState, useEffect } from 'react';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import MapSection from './components/MapSection';
@@ -12,11 +12,29 @@ import ProfilePage from './components/ProfilePage';
 import ProfileSetupModal from './components/ProfileSetupModal';
 import ChatbotPage from './components/ChatbotPage';
 import SubmissionsPage from './components/SubmissionsPage';
+import DashboardPage from './components/DashboardPage';
 
 function AppContent() {
   const { loginStatus, isInitializing } = useInternetIdentity();
   const { data: userProfile, isLoading: profileLoading, isFetched } = useGetCallerUserProfile();
-  const [currentView, setCurrentView] = useState<'main' | 'profile' | 'chatbot' | 'submissions'>('main');
+  const { mutate: updateActiveUser } = useUpdateActiveUser();
+  const [currentView, setCurrentView] = useState<'main' | 'profile' | 'chatbot' | 'submissions' | 'dashboard'>('main');
+
+  const isAuthenticated = loginStatus === 'success';
+
+  // Update active user status when authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      updateActiveUser();
+      
+      // Set up interval to update active status every 5 minutes
+      const interval = setInterval(() => {
+        updateActiveUser();
+      }, 5 * 60 * 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated, updateActiveUser]);
 
   if (isInitializing) {
     return (
@@ -29,7 +47,6 @@ function AppContent() {
     );
   }
 
-  const isAuthenticated = loginStatus === 'success';
   const showProfileSetup = isAuthenticated && !profileLoading && isFetched && userProfile === null;
 
   const handleViewSubmission = (actionId: string) => {
@@ -45,11 +62,11 @@ function AppContent() {
           onProfileClick={() => setCurrentView('profile')} 
           onChatbotClick={() => setCurrentView('chatbot')}
           onSubmissionsClick={() => setCurrentView('submissions')}
+          onDashboardClick={() => setCurrentView('dashboard')}
           onHomeClick={() => setCurrentView('main')}
           onViewSubmission={handleViewSubmission}
         />
         <ProfilePage onBack={() => setCurrentView('main')} />
-        <Footer />
         <Toaster />
       </div>
     );
@@ -62,11 +79,11 @@ function AppContent() {
           onProfileClick={() => setCurrentView('profile')} 
           onChatbotClick={() => setCurrentView('chatbot')}
           onSubmissionsClick={() => setCurrentView('submissions')}
+          onDashboardClick={() => setCurrentView('dashboard')}
           onHomeClick={() => setCurrentView('main')}
           onViewSubmission={handleViewSubmission}
         />
         <ChatbotPage onBack={() => setCurrentView('main')} />
-        <Footer />
         <Toaster />
       </div>
     );
@@ -79,11 +96,28 @@ function AppContent() {
           onProfileClick={() => setCurrentView('profile')} 
           onChatbotClick={() => setCurrentView('chatbot')}
           onSubmissionsClick={() => setCurrentView('submissions')}
+          onDashboardClick={() => setCurrentView('dashboard')}
           onHomeClick={() => setCurrentView('main')}
           onViewSubmission={handleViewSubmission}
         />
         <SubmissionsPage onBack={() => setCurrentView('main')} />
-        <Footer />
+        <Toaster />
+      </div>
+    );
+  }
+
+  if (currentView === 'dashboard' && isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header 
+          onProfileClick={() => setCurrentView('profile')} 
+          onChatbotClick={() => setCurrentView('chatbot')}
+          onSubmissionsClick={() => setCurrentView('submissions')}
+          onDashboardClick={() => setCurrentView('dashboard')}
+          onHomeClick={() => setCurrentView('main')}
+          onViewSubmission={handleViewSubmission}
+        />
+        <DashboardPage onBack={() => setCurrentView('main')} />
         <Toaster />
       </div>
     );
@@ -95,6 +129,7 @@ function AppContent() {
         onProfileClick={() => setCurrentView('profile')} 
         onChatbotClick={() => setCurrentView('chatbot')}
         onSubmissionsClick={() => setCurrentView('submissions')}
+        onDashboardClick={() => setCurrentView('dashboard')}
         onHomeClick={() => setCurrentView('main')}
         onViewSubmission={handleViewSubmission}
       />
@@ -108,7 +143,7 @@ function AppContent() {
           <AuthSection />
         )}
       </main>
-      <Footer />
+      {!isAuthenticated && <Footer />}
       <Toaster />
       {showProfileSetup && <ProfileSetupModal />}
     </div>
@@ -122,4 +157,3 @@ export default function App() {
     </ThemeProvider>
   );
 }
-

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Camera, User, Save, Loader2, Bell } from 'lucide-react';
+import { ArrowLeft, Camera, User, Save, Loader2, Bell, Crown, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import { useGetCallerUserProfile, useSaveUserProfile, useProfilePhoto } from '../hooks/useQueries';
 import { toast } from 'sonner';
 import NotificationSettings from './NotificationSettings';
@@ -63,6 +64,7 @@ export default function ProfilePage({ onBack }: ProfilePageProps) {
         displayName: displayName.trim(),
         bio: bio.trim(),
         profilePhoto: profilePhoto || undefined,
+        isPremium: userProfile?.isPremium || false, // Preserve existing premium status
       },
       {
         onSuccess: () => {
@@ -90,6 +92,7 @@ export default function ProfilePage({ onBack }: ProfilePageProps) {
   }
 
   const currentPhotoUrl = previewUrl || profilePhotoUrl;
+  const isPremium = userProfile?.isPremium || false;
 
   return (
     <div className="min-h-screen bg-background">
@@ -120,97 +123,144 @@ export default function ProfilePage({ onBack }: ProfilePageProps) {
           </TabsList>
 
           <TabsContent value="profile">
-            <Card>
-              <CardHeader>
-                <CardTitle>Profile Information</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Profile Photo Section */}
-                  <div className="flex flex-col items-center space-y-4">
-                    <Avatar className="w-24 h-24">
-                      <AvatarImage src={currentPhotoUrl} alt="Profile" />
-                      <AvatarFallback className="text-2xl">
-                        <User className="w-12 h-12" />
-                      </AvatarFallback>
-                    </Avatar>
-                    
-                    <div className="flex flex-col items-center space-y-2">
-                      <Label htmlFor="profile-photo" className="cursor-pointer">
-                        <Button type="button" variant="outline" size="sm" asChild>
-                          <span>
-                            <Camera className="w-4 h-4 mr-2" />
-                            {currentPhotoUrl ? 'Change Photo' : 'Add Photo'}
-                          </span>
-                        </Button>
-                      </Label>
-                      <Input
-                        id="profile-photo"
-                        type="file"
-                        accept="image/jpeg,image/png"
-                        onChange={handlePhotoChange}
-                        className="hidden"
-                      />
-                      <p className="text-xs text-muted-foreground text-center">
-                        JPEG or PNG, max 5MB
+            <div className="space-y-6">
+              {/* Account Status Display Card */}
+              <Card className="border-2 border-dashed border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    {isPremium ? (
+                      <>
+                        <Crown className="w-5 h-5 text-yellow-500" />
+                        Premium Account
+                      </>
+                    ) : (
+                      <>
+                        <Star className="w-5 h-5 text-muted-foreground" />
+                        Basic Account
+                      </>
+                    )}
+                    <Badge variant={isPremium ? "default" : "secondary"} className="ml-auto">
+                      {isPremium ? "Premium" : "Basic"}
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted-foreground">
+                      {isPremium 
+                        ? "You have premium access and can request funding for your climate actions by adding wallet addresses to your submissions."
+                        : "You currently have basic access. Premium users can request funding for their climate actions with cryptocurrency wallet addresses."
+                      }
+                    </p>
+                    {isPremium && (
+                      <div className="flex items-center gap-2 text-sm text-green-600">
+                        <Crown className="w-4 h-4" />
+                        <span>Funding requests enabled</span>
+                      </div>
+                    )}
+                    <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                      <p className="text-sm text-blue-700 dark:text-blue-300">
+                        <strong>Note:</strong> Account status changes are managed by administrators. 
+                        Contact support if you need assistance with your account status.
                       </p>
                     </div>
                   </div>
+                </CardContent>
+              </Card>
 
-                  {/* Display Name */}
-                  <div className="space-y-2">
-                    <Label htmlFor="displayName">
-                      Display Name <span className="text-destructive">*</span>
-                    </Label>
-                    <Input
-                      id="displayName"
-                      type="text"
-                      value={displayName}
-                      onChange={(e) => setDisplayName(e.target.value)}
-                      placeholder="Enter your display name"
-                      maxLength={50}
-                      required
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      This is how your name will appear to other users
-                    </p>
-                  </div>
+              {/* Profile Information Card */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Profile Information</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Profile Photo Section */}
+                    <div className="flex flex-col items-center space-y-4">
+                      <Avatar className="w-24 h-24">
+                        <AvatarImage src={currentPhotoUrl} alt="Profile" />
+                        <AvatarFallback className="text-2xl">
+                          <User className="w-12 h-12" />
+                        </AvatarFallback>
+                      </Avatar>
+                      
+                      <div className="flex flex-col items-center space-y-2">
+                        <Label htmlFor="profile-photo" className="cursor-pointer">
+                          <Button type="button" variant="outline" size="sm" asChild>
+                            <span>
+                              <Camera className="w-4 h-4 mr-2" />
+                              {currentPhotoUrl ? 'Change Photo' : 'Add Photo'}
+                            </span>
+                          </Button>
+                        </Label>
+                        <Input
+                          id="profile-photo"
+                          type="file"
+                          accept="image/jpeg,image/png"
+                          onChange={handlePhotoChange}
+                          className="hidden"
+                        />
+                        <p className="text-xs text-muted-foreground text-center">
+                          JPEG or PNG, max 5MB
+                        </p>
+                      </div>
+                    </div>
 
-                  {/* Bio */}
-                  <div className="space-y-2">
-                    <Label htmlFor="bio">Bio</Label>
-                    <Textarea
-                      id="bio"
-                      value={bio}
-                      onChange={(e) => setBio(e.target.value)}
-                      placeholder="Tell others about yourself and your climate action interests..."
-                      maxLength={500}
-                      rows={4}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      {bio.length}/500 characters
-                    </p>
-                  </div>
+                    {/* Display Name */}
+                    <div className="space-y-2">
+                      <Label htmlFor="displayName">
+                        Display Name <span className="text-destructive">*</span>
+                      </Label>
+                      <Input
+                        id="displayName"
+                        type="text"
+                        value={displayName}
+                        onChange={(e) => setDisplayName(e.target.value)}
+                        placeholder="Enter your display name"
+                        maxLength={50}
+                        required
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        This is how your name will appear to other users
+                      </p>
+                    </div>
 
-                  {/* Submit Button */}
-                  <div className="flex justify-end">
-                    <Button type="submit" disabled={isSaving}>
-                      {isSaving ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Saving...
-                        </>
-                      ) : (
-                        <>
-                          <Save className="w-4 h-4 mr-2" />
-                          Save Profile
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
+                    {/* Bio */}
+                    <div className="space-y-2">
+                      <Label htmlFor="bio">Bio</Label>
+                      <Textarea
+                        id="bio"
+                        value={bio}
+                        onChange={(e) => setBio(e.target.value)}
+                        placeholder="Tell others about yourself and your climate action interests..."
+                        maxLength={500}
+                        rows={4}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        {bio.length}/500 characters
+                      </p>
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="flex justify-end">
+                      <Button type="submit" disabled={isSaving}>
+                        {isSaving ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Saving...
+                          </>
+                        ) : (
+                          <>
+                            <Save className="w-4 h-4 mr-2" />
+                            Save Profile
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           <TabsContent value="notifications">
@@ -221,4 +271,3 @@ export default function ProfilePage({ onBack }: ProfilePageProps) {
     </div>
   );
 }
-

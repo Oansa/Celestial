@@ -1,153 +1,440 @@
-# Celestial - Climate Action Evidence Sharing Platform
+# Celestial
 
-A decentralized application built on the Internet Computer Protocol (ICP) for sharing climate action evidence and fostering environmental awareness.
+## Overview
+A community-managed web application where authenticated users can share evidence of climate action activities by uploading photos with location data and environmental information, displayed on an interactive map and submissions list. Users must authenticate with Internet Identity before accessing any features. The application includes a premium subscription system where only premium users can request funding through wallet addresses, while basic users can participate in all other features. Only admin/owner users can manage user account status through the dashboard, while regular users cannot change their own status. The application includes an AI-powered chatbot for weather and climate information queries with voting functionality for weather report validation and enhanced platform data search capabilities, a comprehensive notification system to keep users informed about community activities, a dashboard to view currently active community members with user status management for owners, a donation system allowing users to support climate action submissions through fiat or cryptocurrency payments directly to premium users' wallets, and a comment system enabling community discussion on each climate action post.
 
-## Features
+## Visual Design & User Experience
+- Climate-oriented aesthetic with nature-inspired color palette featuring earth tones, forest greens, ocean blues, and sky gradients
+- Environmental motifs subtly integrated throughout the interface including leaf patterns, water ripples, and organic shapes
+- Smooth transitions and animations throughout the application including:
+  - Animated map pin interactions with gentle bounce effects
+  - Button hover effects with color transitions and subtle scaling
+  - Card reveal animations with fade-in and slide effects
+  - Loading animations with nature-inspired elements
+  - Smooth page transitions between sections
+  - Comment section expand/collapse animations with smooth transitions
+  - New comment submission animations with fade-in effects
+  - Premium upgrade promotional animations on sign-in page
+  - User status toggle animations on owner dashboard with distinct, visually clear toggle UI
+  - Enhanced sign-up page animations with interactive elements and engaging transitions
+- Enhanced interactivity with engaging hover states and feedback animations
+- Consistent visual treatment across all pages including homepage, map interface, submissions list, profile pages, donation popups, comment sections, premium upgrade interface, and redesigned sign-up page
+- Immersive user experience while maintaining accessibility standards and interface clarity
+- Responsive design that adapts smoothly to different screen sizes with fluid animations
 
-- **Climate Action Tracking**: Upload and share evidence of climate actions with photos, coordinates, and descriptions
-- **User Profiles**: Create and manage user profiles with display names and bios
-- **Interactive Map**: View climate actions on an interactive map using Leaflet
-- **Chat System**: Real-time messaging between users
-- **Notification System**: Get notified about new climate actions and updates
-- **Access Control**: Role-based permissions (admin, user, guest)
-- **Internet Identity**: Secure authentication using Internet Identity
-- **Blob Storage**: Decentralized file storage for photos and documents
-- **Weather Integration**: Fetch weather data via HTTP outcalls
+## Authentication
+- Internet Identity integration for user authentication with properly functioning sign-in button that reliably triggers the authentication flow
+- Sign-in button must be visually enabled, respond to clicks, and successfully initiate authentication
+- Error handling and display of relevant error messages when authentication fails
+- Login required before accessing any application features including commenting
+- User-friendly login/logout flow with Celestial branding and climate-themed visual elements
+- Premium upgrade advertisement prominently displayed on sign-in page with message "Premium for 0.0001 BTC" and engaging call-to-action
+- Redesigned sign-up page with enhanced green, interactive design featuring:
+  - Welcoming headline: "Get funding for your climate change endeavours"
+  - Mock user reviews section with 3-5 testimonials showcasing user experiences
+  - More engaging layout with interactive elements and climate-themed animations
+  - Enhanced visual appeal with nature-inspired design elements
+  - Improved user onboarding experience with clear value proposition
+  - "What Our Community Says" review cards with black background, white text, and green borders for consistent and visually clear color scheme
+  - "Join Celestial Today" card with black background, white text, and green borders for consistent and visually clear color scheme
+  - All text within review cards and join card easily readable and visually distinct from the background
+- Clear authentication state indication throughout the application
+- Secure session management
+- Reliable authentication flow that allows users to successfully log in and access the application
 
-## Project Structure
+## Premium Subscription System
+- Two-tier user system: Basic and Premium users
+- Premium subscription requirement for funding request capabilities (wallet address submission)
+- Premium upgrade advertisement on sign-in page featuring:
+  - Prominent display of "Premium for 0.0001 BTC" pricing
+  - Benefits explanation highlighting funding request capabilities
+  - Upgrade call-to-action button with engaging animations
+- User status tracking and management in backend
+- Premium status validation for wallet address submission functionality
+- Clear indication of user's current status (basic or premium) in user interface
+- Admin/owner-only user status management through dashboard interface
 
-```
-├── backend/                    # Motoko backend canisters
-│   ├── main.mo                # Main canister with all functionality
-│   ├── authorization/         # Access control system
-│   ├── blob-storage/          # File storage registry
-│   └── http-outcalls/         # External API integration
-├── frontend/                  # React TypeScript frontend
-│   ├── src/
-│   │   ├── components/        # React components
-│   │   ├── hooks/             # Custom React hooks
-│   │   └── blob-storage/      # File storage utilities
-│   ├── dist/                  # Build output (generated)
-│   └── index.html
-└── dfx.json                   # DFX configuration
-```
+## Core Features
 
-## Prerequisites
+### User Profile Management (Authenticated Users Only)
+- Profile page accessible from main navigation with smooth transition animations
+- Profile creation and editing functionality with fields:
+  - Display name (required)
+  - Short bio text area (optional)
+  - Profile photo upload (optional, JPEG and PNG formats)
+- Profile data validation and form handling with animated feedback
+- Profile viewing interface showing user's information with engaging card animations
+- User status display (Basic or Premium) on profile page
 
-- [DFX SDK](https://internetcomputer.org/docs/current/developer-docs/setup/install/) >= 0.15.0
-- Node.js >= 18.0.0
-- npm or yarn
+### Dashboard (Authenticated Users Only)
+- Dashboard page accessible from main navigation with animated entry transitions
+- Display list of currently logged-in users with staggered card animations
+- Each user entry shows:
+  - Display name
+  - Profile photo (if available)
+  - Basic profile information (bio if available)
+  - Current user status (Basic or Premium) clearly displayed
+- Admin/owner-only controls for user status management:
+  - Distinct, visually clear toggle UI for switching users between Basic and Premium status with enhanced visual feedback
+  - Toggle controls that provide clear visual indication of current state and switching action
+  - Status change confirmation with animated feedback
+  - Real-time status updates with smooth transitions
+  - Proper state management ensuring toggles work consistently for switching users from Basic to Premium and Premium to Basic
+  - Enhanced toggle design that clearly differentiates between Basic and Premium states
+  - Only admin/owner users can access and use these toggle controls
+- Real-time or near real-time updates of active user list with smooth addition/removal animations
+- Responsive display that adapts to different screen sizes with fluid layout transitions
 
-## Installation
+### Notification System (Authenticated Users Only)
+- Notification preferences management accessible from profile page or dedicated settings page
+- Three notification subscription options:
+  - All community updates: receive notifications for all new climate activity submissions
+  - Updates from specific users: subscribe to notifications from selected users only
+  - Updates within their area: receive notifications for submissions within user's geographical area
+- Notification preferences interface with:
+  - Animated toggle switches for each notification type
+  - User selection interface for following specific users with search animations
+  - Area selection interface for geographical notifications
+- Notification display system showing:
+  - New submission alerts with photo thumbnail, user name, and location
+  - Timestamp of notification
+  - Link to view full submission details
+- Notification management features with smooth interactions:
+  - Mark notifications as read/unread with fade transitions
+  - Clear all notifications option with confirmation animation
+  - Notification history view with scroll animations
 
-1. **Install DFX** (if not already installed):
-   ```bash
-   sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
-   ```
+### Upload Form (Authenticated Users Only)
+- Photo upload functionality supporting JPEG and PNG formats with drag-and-drop animations
+- Location input with three options:
+  - Area name text input with geocoding validation:
+    - Text field for entering city, town, or landmark names
+    - Real-time validation using public geocoding API (OpenStreetMap Nominatim or Google Maps Geocoding API)
+    - Automatic coordinate population when valid area is found with smooth field updates
+    - Error message display when area cannot be found or validated
+    - Coordinates automatically filled with latitude and longitude from geocoding results
+  - Manual coordinate entry with direction specification:
+    - Latitude field with North/South direction selector
+    - Longitude field with East/West direction selector
+  - Automatic location capture from device GPS
+- Environmental data fields with interactive form elements:
+  - Temperature input in Celsius
+  - Weather notes text field
+  - Short description text area
+- Category selection system with dynamic form fields:
+  - Category dropdown with predefined options:
+    - Tree planting
+    - Cleanup
+    - Renewable energy
+    - Awareness event
+  - Dynamic field display based on selected category with smooth transitions:
+    - **Tree Planting**: Number of trees planted (numeric input), Tree species (text input), Planting area size (numeric input with unit selector)
+    - **Cleanup**: Type of waste collected (text input), Amount of waste (numeric input with unit selector), Area cleaned (text input)
+    - **Renewable Energy**: Installation type (dropdown: Solar panels, Wind turbine, Other), Energy capacity (numeric input with unit selector), Installation details (text area)
+    - **Awareness Event**: No additional category-specific fields (uses standard photo, coordinates, temperature, weather notes, description)
+- Premium-only cryptocurrency wallet address field:
+  - Text input for Bitcoin or other cryptocurrency wallet address (only available to Premium users)
+  - Field validation for proper wallet address format
+  - Premium status validation before allowing wallet address submission
+  - Clear messaging for Basic users explaining Premium requirement for funding requests
+  - Upgrade prompt for Basic users with link to premium upgrade process
 
-2. **Install frontend dependencies**:
-   ```bash
-   cd frontend
-   npm install
-   ```
+### Interactive Map Interface (Authenticated Users Only)
+- Map display using Mapbox or Leaflet map library with smooth zoom and pan animations
+- Each upload displayed as a clickable pin on the map with animated hover effects and gentle bounce interactions
+- Pin click functionality opens a detailed popup or card with slide-in animations showing:
+  - Photo thumbnail
+  - Area name and coordinates displayed with direction indicators (e.g., "Los Angeles, 34.05° N, 118.25° W")
+  - Temperature data
+  - Weather notes and description
+  - Category tags and category-specific information
+  - User attribution in format: "Update from [user display name]"
+  - "Make Donation" button that opens donation popup with smooth modal transition (only visible if Premium user provided wallet address or fiat donations are available)
+  - Comment section displaying existing comments with commenter display names and timestamps
+  - Comment input field for adding new comments (authenticated users only)
+  - Comment submission button with animated feedback
+- Map navigation controls (zoom, pan) with animated feedback
+- Responsive map display that adapts to different screen sizes with fluid transitions
 
-## Development
+### Submissions List Page (Authenticated Users Only)
+- Dedicated page accessible from main navigation displaying all user submissions with staggered card animations
+- List or grid format showing all climate activity submissions with reveal animations on scroll
+- Each submission entry displays:
+  - Photo thumbnail
+  - Area name and coordinates with direction indicators (e.g., "Los Angeles, 34.05° N, 118.25° W")
+  - Temperature data
+  - Weather notes and description
+  - Category tags and category-specific information
+  - Upload timestamp
+  - User attribution at bottom in format: "Update from [user display name]"
+  - "Make Donation" button that opens donation popup with smooth modal transition (only visible if Premium user provided wallet address or fiat donations are available)
+  - Comment section displaying existing comments with commenter display names and timestamps
+  - Comment input field for adding new comments (authenticated users only)
+  - Comment submission button with animated feedback
+- Advanced location-based filtering system with hierarchical selection and animated dropdown transitions:
+  - Continent selection dropdown
+  - Country selection dropdown (filtered by selected continent)
+  - Administrative division selection dropdowns (provinces, states, counties, etc.)
+  - Dynamic filtering options that update based on previous selections with smooth transitions
+  - Geographical hierarchy following correct administrative divisions for each country
+- Filter controls that dynamically update available options based on user selections with animated feedback
+- Responsive display that adapts to different screen sizes with fluid layout animations
 
-### Start Local Development Environment
+### Comment System (Authenticated Users Only)
+- Comment section displayed below submission details on both map interface and submissions list
+- Comment display showing:
+  - Comment text content
+  - Commenter's display name
+  - Comment timestamp
+  - Chronological ordering with newest comments first
+- Comment input interface with:
+  - Text area for writing new comments
+  - Character limit indication
+  - Submit button with animated feedback
+  - Form validation for required comment content
+- Comment submission functionality:
+  - Real-time comment posting with immediate UI updates
+  - Comment validation and error handling
+  - Smooth animations for new comment appearance
+- Comment management:
+  - Comments associated with specific submissions
+  - User attribution for each comment
+  - Timestamp tracking for comment history
 
-1. **Start the local ICP replica**:
-   ```bash
-   dfx start --clean
-   ```
+### Donation System (Authenticated Users Only)
+- "Make Donation" button on each submission card in both map interface and submissions list with engaging hover effects (only displayed if Premium user provided wallet address or fiat donations are available)
+- Redesigned donation popup modal interface with improved clarity and organization:
+  - Reduced transparency for better readability and visual clarity
+  - Well-aligned and visually grouped components with proper spacing and organization
+  - Enhanced overall layout for a more polished and user-friendly appearance
+  - Improved visual hierarchy with clear section divisions
+  - Better contrast and readability for all text elements
+  - Organized content sections with logical grouping of related elements
+  - Smooth modal animations and payment options based on submission
+  - Stripe integration for fiat currency donations (credit/debit cards) - always available
+  - Cryptocurrency donation option - only displayed if the Premium submission creator provided a wallet address
+- Donation popup displays with animated content transitions:
+  - Submission details (photo, location, user)
+  - Payment method selection with interactive button animations
+  - Amount input field for fiat donations
+  - For crypto donations (when available from Premium users):
+    - Display of submission creator's wallet address with clear labeling
+    - Copy-to-clipboard functionality for wallet address
+    - QR code generation for the user's wallet address
+    - Instructions for completing crypto transfers directly to the user's wallet
+- Clear indication that crypto donations go directly to the Premium submission creator
+- Admin-only configuration interface for:
+  - Managing Stripe integration settings
+  - Configuring supported payment methods (fiat only, as crypto goes directly to Premium users)
+- Optional public donation ledger displaying:
+  - Recent donation receipts (anonymized or with donor consent)
+  - Total donations per submission
+  - Transparency reporting for community trust
 
-2. **Deploy canisters locally**:
-   ```bash
-   dfx deploy
-   ```
+### Enhanced Weather Chatbot (Authenticated Users Only)
+- Chatbot interface accessible from main navigation with smooth slide-in animations
+- Improved UI design with proper text wrapping and layout ensuring all responses stay within card borders for clean, readable appearance
+- Conversational UI for weather and climate queries with animated message bubbles that maintain proper formatting
+- Enhanced chatbot capabilities supporting queries about:
+  - Current local weather conditions
+  - Historical climate data
+  - Weather forecasts
+  - Location-based weather information
+  - Platform data including climate action submissions, user profiles, and recent activities
+  - Search and reference functionality for uploaded climate activities by location, category, user, or date
+  - User profile information and activity summaries
+  - Recent community activities and trends
+  - Statistics about platform usage and climate actions
+- Chat history display with user messages and bot responses with staggered message animations
+- Message input field and send functionality with button feedback animations
+- Integration with external weather APIs (OpenWeatherMap or similar) for real-time data
+- Platform data integration allowing chatbot to search and reference:
+  - Climate action submissions with location, category, and user details
+  - User profiles and their activity history
+  - Recent uploads and community trends
+  - Statistical information about platform usage
+- Location-aware responses using user's current location or specified coordinates
+- Natural language processing to interpret weather-related questions and platform data queries
+- Formatted weather information and platform data display in conversational format with animated cards
+- Weather report voting system with interactive animations:
+  - Each weather report card displays upvote and downvote buttons prominently with hover effects
+  - Current upvote and downvote counts displayed clearly on each weather report card
+  - Each user can vote once per weather report (either upvote or downvote, but not both)
+  - Visual indication of user's current vote on each weather report with highlighted button animations
+  - Real-time UI updates after voting showing updated counts and vote status with smooth transitions
+  - Vote validation to prevent duplicate voting by the same user
+- Enhanced text formatting and layout controls to ensure proper display within chat interface boundaries
 
-3. **Start the frontend development server** (in another terminal):
-   ```bash
-   cd frontend
-   npm run dev
-   ```
+### Footer Enhancement
+- Enhanced footer section displayed only when users are not logged in (unauthenticated state)
+- Footer hidden from all authenticated views and pages after user login
+- Footer sections including:
+  - **Support** section (non-functional placeholder links)
+  - **API** section (non-functional placeholder links)
+  - **Contact Us** section (non-functional placeholder links)
+- Celestial logo display prominently in footer using the provided logo image
+- Company slogan prominently displayed: "From documenting local climate actions to funding global relief, we harness the power of transparency and decentralization to turn proof into impact."
+- Footer styling consistent with overall climate-themed design aesthetic
+- Responsive footer layout that adapts to different screen sizes
+- Footer animations and hover effects consistent with overall application design
 
-The application will be available at:
-- Frontend: http://localhost:3000
-- Backend canister: http://localhost:8000/?canisterId={canister_id}
+### Data Management
+- Backend storage of all uploaded content including:
+  - Photos and image files
+  - Location coordinates with direction information (latitude with North/South, longitude with East/West)
+  - Area names associated with coordinates
+  - Detailed geographical information (continent, country, administrative divisions)
+  - Environmental data (temperature, weather notes, descriptions)
+  - Category tags and category-specific data:
+    - Tree planting: number of trees, species, planting area size
+    - Cleanup: waste type, amount of waste, area cleaned
+    - Renewable energy: installation type, energy capacity, installation details
+    - Awareness event: standard fields only
+  - Upload timestamps
+  - User identity association with uploads
+  - Premium user-provided cryptocurrency wallet addresses for direct donations
+- Backend storage of user profile data including:
+  - Display names
+  - Bio information
+  - Profile photos
+  - User identity association with profiles
+  - User subscription status (Basic or Premium)
+  - Admin/owner role identification for dashboard access control
+- Backend storage of user session data including:
+  - Currently logged-in user tracking
+  - User activity status for dashboard display
+  - Session management for active user list
+- Backend storage of notification system data including:
+  - User notification preferences (all updates, specific users, area-based)
+  - User subscription lists for following specific users
+  - User geographical area preferences for location-based notifications
+  - Notification records with timestamps, read/unread status, and associated submission data
+  - Notification delivery tracking and history
+- Backend storage of geographical hierarchy data for location filtering:
+  - Continent information
+  - Country information with continent associations
+  - Administrative division data for each country (provinces, states, counties, etc.)
+- Backend storage of weather report voting data including:
+  - Weather report unique identifiers
+  - User votes associated with weather reports (upvote or downvote)
+  - User principal IDs to prevent duplicate voting
+  - Vote counts (upvotes and downvotes) for each weather report
+  - Vote timestamps and tracking
+- Backend storage of donation system data including:
+  - Stripe integration configuration and API keys
+  - Donation transaction records with submission associations (fiat only)
+  - Donation amounts and timestamps for fiat donations
+  - Payment method tracking
+  - Admin configuration settings for payment methods
+  - Optional donation ledger data for transparency reporting
+- Backend storage of comment system data including:
+  - Comment text content
+  - Comment timestamps
+  - User identity association with comments (commenter information)
+  - Submission association for each comment
+  - Comment unique identifiers
+  - User display names for comment attribution
+- Backend storage of premium subscription system data including:
+  - User subscription status tracking (Basic or Premium)
+  - Premium status change history and timestamps
+  - Admin/owner permissions for user status management
+  - Premium feature access validation records
+- Backend integration with external weather APIs for:
+  - Current weather data retrieval
+  - Historical climate data access
+  - Weather forecast information
+  - Location-based weather queries
+- Backend integration with geocoding APIs for:
+  - Area name validation and coordinate lookup
+  - Location search functionality
+  - Address and landmark resolution
+  - Reverse geocoding to retrieve area names from coordinates
+- Backend integration with Stripe API for:
+  - Processing fiat currency donations
+  - Payment verification and confirmation
+  - Transaction record keeping
+- API endpoints for:
+  - User authentication verification with proper Internet Identity integration
+  - Creating and updating user profiles (authenticated users only)
+  - Retrieving user profile data with subscription status (authenticated users only)
+  - Retrieving currently logged-in users list with profile information and subscription status for dashboard (authenticated users only)
+  - Managing user session status and activity tracking (authenticated users only)
+  - Admin/owner-only endpoints for managing user subscription status with reliable bidirectional Basic/Premium toggle functionality
+  - Admin/owner role verification for dashboard access control
+  - Validating Premium status for wallet address submission functionality
+  - Managing notification preferences and subscriptions (authenticated users only)
+  - Creating and delivering notifications based on user preferences (authenticated users only)
+  - Retrieving user notifications with read/unread status (authenticated users only)
+  - Marking notifications as read/unread (authenticated users only)
+  - Clearing notification history (authenticated users only)
+  - Uploading new climate activity data with photos, area names, detailed location information including coordinate directions, category-specific data, and Premium-only wallet addresses (authenticated users only)
+  - Fetching all climate activity data for map display with area names, user information, category-specific data, and Premium wallet address availability (authenticated users only)
+  - Fetching all climate activity data for submissions list with location-based filtering, area names, user information, category-specific data, and Premium wallet address availability (authenticated users only)
+  - Retrieving geographical hierarchy data for location filtering (continents, countries, administrative divisions)
+  - Retrieving individual upload details with area names, user information, category-specific data, and Premium wallet addresses (authenticated users only)
+  - Processing chatbot weather queries and returning formatted responses with unique report IDs (authenticated users only)
+  - Processing chatbot platform data queries and returning relevant climate action submissions, user profiles, and activity information (authenticated users only)
+  - Searching platform data by location, category, user, date, and other criteria for chatbot responses (authenticated users only)
+  - Retrieving platform statistics and trends for chatbot informational responses (authenticated users only)
+  - Fetching weather data from external APIs based on location parameters
+  - Validating area names and retrieving coordinates through geocoding APIs (authenticated users only)
+  - Retrieving user display names for submission attribution
+  - Submitting votes for weather reports (upvote or downvote) with user validation (authenticated users only)
+  - Retrieving vote counts and user's current vote status for weather reports (authenticated users only)
+  - Preventing duplicate voting by the same user on the same weather report
+  - Processing Stripe payment intents for fiat donations (authenticated users only)
+  - Recording donation transactions with submission associations for fiat donations (authenticated users only)
+  - Retrieving donation ledger data for transparency display (authenticated users only)
+  - Admin-only endpoints for configuring Stripe settings
+  - Admin-only endpoints for managing donation system configuration
+  - Validating cryptocurrency wallet address formats during Premium user submission (authenticated Premium users only)
+  - Retrieving Premium user-provided wallet addresses for donation display (authenticated users only)
+  - Creating new comments on submissions with user attribution and timestamps (authenticated users only)
+  - Retrieving comments for specific submissions with commenter display names and timestamps (authenticated users only)
+  - Fetching user display names for comment attribution (authenticated users only)
 
-### Build for Production
-
-1. **Build the frontend**:
-   ```bash
-   cd frontend
-   npm run build
-   ```
-
-2. **Deploy to production**:
-   ```bash
-   dfx deploy --network ic
-   ```
-
-## Available Scripts
-
-### Backend (Motoko)
-- `dfx canister create celestial_backend` - Create the backend canister
-- `dfx build celestial_backend` - Build the backend canister
-- `dfx canister install celestial_backend` - Install the backend canister
-
-### Frontend (React)
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-
-## Canister Configuration
-
-The `dfx.json` file defines two canisters:
-
-1. **celestial_backend**: Motoko canister containing all the business logic
-2. **celestial_frontend**: Asset canister serving the React application
-
-## API Endpoints
-
-The backend provides the following main functions:
-
-- `uploadClimateAction()` - Upload evidence of climate actions
-- `getAllClimateActions()` - Retrieve all climate actions
-- `saveCallerUserProfile()` - Save user profile information
-- `sendChatMessage()` - Send chat messages
-- `getNotifications()` - Get user notifications
-- `fetchWeatherData()` - Fetch weather information
-
-## Environment Variables
-
-Create a `.env` file in the frontend directory for configuration:
-
-```env
-VITE_CANISTER_ID_BACKEND=your_backend_canister_id
-VITE_INTERNET_IDENTITY_URL=https://identity.ic0.app
-```
-
-## Deployment
-
-### Local Development
-```bash
-dfx start --clean
-dfx deploy
-```
-
-### Mainnet Deployment
-```bash
-dfx deploy --network ic
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test locally with `dfx deploy`
-5. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License.
+## Technical Requirements
+- All content and interface elements in English
+- Properly functioning Internet Identity authentication integration with reliable sign-in button
+- Premium subscription system with user status tracking and validation
+- Admin/owner authentication and authorization for user status management with reliable bidirectional toggle functionality featuring distinct, visually clear toggle UI
+- Admin/owner role verification and access control for dashboard user management features
+- Premium status validation for wallet address submission functionality
+- Image storage and retrieval capabilities in the backend for both activity photos and profile photos
+- Interactive map integration using Mapbox or Leaflet with smooth animations
+- Form validation for required fields and data formats including coordinate direction validation, Premium-only wallet address format validation, category-specific field validation, and comment content validation
+- Dynamic form field display based on category selection and Premium status with smooth transitions
+- Authentication state management and protection of all features including commenting
+- Main navigation including profile page, dashboard page, submissions list page, chatbot access, and notification management with smooth transitions
+- Error handling and user feedback for authentication issues and Premium feature restrictions
+- External API integration for weather data services
+- External API integration for geocoding services (OpenStreetMap Nominatim or Google Maps Geocoding API)
+- Natural language processing capabilities for chatbot query interpretation including platform data search
+- Enhanced chatbot UI with proper text wrapping, layout controls, and response formatting to ensure content stays within card boundaries
+- Platform data search and retrieval capabilities for chatbot integration
+- Statistical analysis and trend calculation for platform data insights
+- Geographical data management for hierarchical location filtering
+- Dynamic filtering interface with cascading dropdown selections and animated transitions
+- Coordinate display formatting with direction indicators and area names throughout the application
+- Real-time area name validation and coordinate auto-population functionality
+- User display name retrieval and attribution display functionality for submissions and comments
+- Notification system with real-time delivery and management capabilities
+- User preference management for notification subscriptions and customization
+- User session tracking and active user management for dashboard functionality
+- Weather report voting system with duplicate vote prevention and real-time UI updates
+- Unique weather report identification and vote tracking capabilities
+- Stripe API integration for secure fiat payment processing
+- Cryptocurrency wallet address validation and format checking for Premium users
+- QR code generation for Premium user-provided crypto wallet addresses
+- Copy-to-clipboard functionality for wallet addresses
+- Admin authentication and authorization for donation system configuration
+- Donation transaction tracking and record keeping for fiat donations
+- Optional public donation ledger display with transparency features
+- Comment system with real-time posting and display capabilities
+- Comment validation and content management
+- User attribution system for comment display with display names
+- Enhanced footer implementation with logo display, company slogan, and organized sections visible only in unauthenticated state
+- Redesigned sign-up page with enhanced green, interactive design and user testimonials
+- CSS animations and transitions for enhanced user experience including comment interactions, Premium upgrade promotions, enhanced toggle UI, and sign-up page interactions
+- Accessibility compliance for all interactive elements and animations
+- Performance optimization for smooth animations across different devices

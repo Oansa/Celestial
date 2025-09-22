@@ -1,12 +1,14 @@
 import { useState, useMemo } from 'react';
-import { ArrowLeft, MapPin, Thermometer, Calendar, Tag, Filter, X } from 'lucide-react';
+import { ArrowLeft, MapPin, Thermometer, Calendar, Tag, Filter, X, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { useGetAllClimateActions, useClimateActionPhoto } from '../hooks/useQueries';
+import { useGetAllClimateActions, useClimateActionPhoto, useIsStripeConfigured } from '../hooks/useQueries';
 import { ClimateAction, Category } from '../backend';
+import DonationModal from './DonationModal';
+import CommentSection from './CommentSection';
 
 interface SubmissionsPageProps {
   onBack: () => void;
@@ -112,8 +114,9 @@ interface LocationFilters {
   adminDivision?: string;
 }
 
-function SubmissionCard({ action }: { action: ClimateAction }) {
+function SubmissionCard({ action, onDonate }: { action: ClimateAction; onDonate: () => void }) {
   const { data: photoUrl } = useClimateActionPhoto(action.photoPath);
+  const { data: isStripeConfigured = false } = useIsStripeConfigured();
 
   const getCategoryLabel = (category: Category) => {
     switch (category) {
@@ -145,16 +148,13 @@ function SubmissionCard({ action }: { action: ClimateAction }) {
     }
   };
 
-  const formatLocationDisplay = (coordinates: { latitude: number; longitude: number; latitudeDirection: string; longitudeDirection: string; areaName: string }) => {
-    // Display the area name prominently, with coordinates as additional detail
+  const formatLocationWithCoordinates = (coordinates: { latitude: number; longitude: number; latitudeDirection: string; longitudeDirection: string; areaName: string }) => {
     const formattedCoords = `${coordinates.latitude.toFixed(4)}° ${coordinates.latitudeDirection}, ${coordinates.longitude.toFixed(4)}° ${coordinates.longitudeDirection}`;
-    return {
-      areaName: coordinates.areaName,
-      coordinates: formattedCoords
-    };
+    return `${coordinates.areaName}, ${formattedCoords}`;
   };
 
-  const locationInfo = formatLocationDisplay(action.coordinates);
+  // Check if donation options are available (Stripe or user wallet)
+  const hasDonationOptions = isStripeConfigured || !!action.walletAddress;
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
@@ -171,20 +171,15 @@ function SubmissionCard({ action }: { action: ClimateAction }) {
           </div>
         )}
       </div>
-      <CardContent className="p-4">
+      <CardContent className="p-4 space-y-4">
         <div className="space-y-3">
           <p className="text-sm text-muted-foreground line-clamp-2">
             {action.description}
           </p>
           
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <MapPin className="w-4 h-4" />
-              <span className="font-medium">{locationInfo.areaName}</span>
-            </div>
-            <div className="text-xs text-muted-foreground ml-6">
-              {locationInfo.coordinates}
-            </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <MapPin className="w-4 h-4" />
+            <span>{formatLocationWithCoordinates(action.coordinates)}</span>
           </div>
           
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -203,25 +198,38 @@ function SubmissionCard({ action }: { action: ClimateAction }) {
             </p>
           )}
           
-          {action.categories.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {action.categories.map((category, index) => (
-                <Badge
-                  key={index}
-                  variant="secondary"
-                  className={getCategoryColor(category)}
-                >
-                  <Tag className="w-3 h-3 mr-1" />
-                  {getCategoryLabel(category)}
-                </Badge>
-              ))}
-            </div>
-          )}
+          <div className="flex flex-wrap gap-1">
+            <Badge
+              variant="secondary"
+              className={getCategoryColor(action.category)}
+            >
+              <Tag className="w-3 h-3 mr-1" />
+              {getCategoryLabel(action.category)}
+            </Badge>
+          </div>
           
           <div className="pt-2 border-t border-border">
             <p className="text-xs text-muted-foreground">
-              Shared by <span className="font-medium">{action.userDisplayName}</span>
+              Update from {action.userDisplayName}
             </p>
+          </div>
+
+          {/* Only show donation button if there are donation options available */}
+          {hasDonationOptions && (
+            <div className="pt-2">
+              <Button
+                onClick={onDonate}
+                className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+              >
+                <Heart className="w-4 h-4 mr-2" />
+                Make Donation
+              </Button>
+            </div>
+          )}
+
+          {/* Comment Section */}
+          <div className="pt-2 border-t border-border">
+            <CommentSection submissionId={action.id} />
           </div>
         </div>
       </CardContent>
@@ -233,6 +241,8 @@ export default function SubmissionsPage({ onBack }: SubmissionsPageProps) {
   const { data: climateActions = [], isLoading } = useGetAllClimateActions();
   const [filters, setFilters] = useState<LocationFilters>({});
   const [showFilters, setShowFilters] = useState(false);
+  const [donationModalOpen, setDonationModalOpen] = useState(false);
+  const [donationAction, setDonationAction] = useState<ClimateAction | null>(null);
 
   // Get available options based on current selections
   const availableCountries = useMemo(() => {
@@ -266,6 +276,11 @@ export default function SubmissionsPage({ onBack }: SubmissionsPageProps) {
   };
 
   const hasActiveFilters = filters.continent || filters.country || filters.adminDivision;
+
+  const handleDonate = (action: ClimateAction) => {
+    setDonationAction(action);
+    setDonationModalOpen(true);
+  };
 
   if (isLoading) {
     return (
@@ -477,11 +492,26 @@ export default function SubmissionsPage({ onBack }: SubmissionsPageProps) {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredSubmissions.map((action) => (
-              <SubmissionCard key={action.id} action={action} />
+              <SubmissionCard 
+                key={action.id} 
+                action={action} 
+                onDonate={() => handleDonate(action)}
+              />
             ))}
           </div>
         )}
       </div>
+
+      {donationAction && (
+        <DonationModal
+          isOpen={donationModalOpen}
+          onClose={() => {
+            setDonationModalOpen(false);
+            setDonationAction(null);
+          }}
+          submission={donationAction}
+        />
+      )}
     </div>
   );
 }
