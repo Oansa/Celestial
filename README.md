@@ -2,6 +2,7 @@
 
 ## Overview
 A community-managed web application where authenticated users can share evidence of climate action activities by uploading photos with location data and environmental information, displayed on an interactive map and submissions list. Users must authenticate with Internet Identity before accessing any features. The application includes a premium subscription system where only premium users can request funding through wallet addresses, while basic users can participate in all other features. Only admin/owner users can manage user account status through the dashboard, while regular users cannot change their own status. The application includes an AI-powered chatbot for weather and climate information queries with voting functionality for weather report validation and enhanced platform data search capabilities, a comprehensive notification system to keep users informed about community activities, a dashboard to view currently active community members with user status management for owners, a donation system allowing users to support climate action submissions through fiat or cryptocurrency payments directly to premium users' wallets, and a comment system enabling community discussion on each climate action post.
+Check it out here👋: https://celestial-i43.caffeine.xyz/
 
 ## Visual Design & User Experience
 - Climate-oriented aesthetic with nature-inspired color palette featuring earth tones, forest greens, ocean blues, and sky gradients
